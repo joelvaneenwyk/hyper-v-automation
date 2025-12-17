@@ -42,29 +42,31 @@ Describe 'Repository Structure' {
 Describe 'PowerShell Scripts Validity' {
     BeforeAll {
         # Find all PowerShell files
-        $psFiles = Get-ChildItem -Path $repoRoot -Include '*.ps1', '*.psm1', '*.psd1' -Recurse -File |
-            Where-Object { $_.FullName -notmatch '[\\/]\.git[\\/]' }
+        $script:psFiles = @(Get-ChildItem -Path $repoRoot -Include '*.ps1', '*.psm1', '*.psd1' -Recurse -File |
+            Where-Object { $_.FullName -notmatch '[\\/]\.git[\\/]' })
     }
 
     It 'Has PowerShell files in repository' {
-        $psFiles.Count | Should -BeGreaterThan 0
+        $script:psFiles.Count | Should -BeGreaterThan 0
     }
 
     Context 'Script Parsing' {
-        It 'Script <_.Name> should parse without errors' -ForEach $psFiles {
-            $errors = $null
-            $null = [System.Management.Automation.PSParser]::Tokenize((Get-Content -Path $_.FullName -Raw), [ref]$errors)
-            $errors.Count | Should -Be 0
+        It 'All PowerShell scripts should parse without errors' {
+            $parseErrors = @()
+            foreach ($file in $script:psFiles) {
+                $errors = $null
+                $null = [System.Management.Automation.PSParser]::Tokenize((Get-Content -Path $file.FullName -Raw), [ref]$errors)
+                if ($errors.Count -gt 0) {
+                    $parseErrors += "$($file.Name): $($errors.Count) error(s)"
+                }
+            }
+            $parseErrors.Count | Should -Be 0 -Because "All scripts should parse without errors. Errors: $($parseErrors -join ', ')"
         }
     }
 
     Context 'Script Analysis' {
-        BeforeAll {
-            # Only run if PSScriptAnalyzer is available
+        It 'PSScriptAnalyzer module is available' {
             $hasPSSA = Get-Module -ListAvailable -Name PSScriptAnalyzer
-        }
-
-        It 'PSScriptAnalyzer module is available' -Skip:(-not $hasPSSA) {
             $hasPSSA | Should -Not -BeNullOrEmpty
         }
     }
