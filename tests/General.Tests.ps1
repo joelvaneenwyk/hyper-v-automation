@@ -9,6 +9,7 @@
 #>
 
 BeforeAll {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', '', Justification = 'Variable is used in Describe blocks, PSScriptAnalyzer does not understand Pester scoping')]
     $repoRoot = Split-Path -Parent $PSScriptRoot
 }
 

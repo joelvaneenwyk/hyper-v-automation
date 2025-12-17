@@ -48,7 +48,6 @@ function Normalize-MacAddress ([string]$value) {
 # Get default VHD path (requires administrative privileges)
 $vmmsSettings = Get-CimInstance -Namespace root\virtualization\v2 -ClassName Msvm_VirtualSystemManagementServiceSettingData
 $vhdxPath = Join-Path $vmmsSettings.DefaultVirtualHardDiskPath "$VMName.vhdx"
-$metadataIso = Join-Path $vmmsSettings.DefaultVirtualHardDiskPath "$VMName-metadata.iso"
 
 # Create VM
 Write-Verbose 'Creating VM...'
