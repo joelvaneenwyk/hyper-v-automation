@@ -8,8 +8,6 @@ For Hyper-V Generation 2 (UEFI) VMs only.
 
 To migrate an existing Windows VM from Hyper-V to Proxmox (QEMU) see [Prepare a VHDX for QEMU migration](#prepare-a-vhdx-for-qemu-migration).
 
-
-
 ## How to install
 
 To download all scripts into your `$env:TEMP` folder:
@@ -17,7 +15,6 @@ To download all scripts into your `$env:TEMP` folder:
 ```powershell
 iex (iwr 'bit.ly/h-v-a' -UseBasicParsing)
 ```
-
 
 # Examples
 
@@ -66,8 +63,6 @@ Invoke-Command -Session $sess {
 Remove-PSSession -Session $sess
 ```
 
-
-
 ## Prepare a VHDX for QEMU migration
 
 ```powershell
@@ -91,34 +86,31 @@ After the copy is complete, you may use [`import-vm-windows`](https://github.com
 
 Once the VM is running, ensure that the [QEMU Guest Agent](https://pve.proxmox.com/wiki/Qemu-guest-agent) is installed within the guest environment.
 
-
-
 # Command summary
-  - For Windows VMs
-    - [New-VMFromWindowsImage](#new-vmfromwindowsimage-) (*)
-    - [New-VHDXFromWindowsImage](#new-vhdxfromwindowsimage-) (*)
-    - [New-VMSession](#new-vmsession)
-    - [Set-NetIPAddressViaSession](#set-netipaddressviasession)
-    - [Set-NetIPv6AddressViaSession](#set-netipv6addressviasession)
-    - [Get-VirtioImage](#get-virtioimage)
-    - [Add-VirtioDrivers](#add-virtiodrivers)
-    - [Enable-RemoteManagementViaSession](#enable-remotemanagementviasession)
-  - For Ubuntu VMs
-    - [Get-UbuntuImage](#get-ubuntuimage)
-    - [New-VMFromUbuntuImage](#new-vmfromubuntuimage-) (*)
-  - For Debian VMs
-    - [Get-DebianImage](#get-debianimage)
-    - [New-VMFromDebianImage](#new-vmfromdebianimage-) (*)
-  - For images with no `cloud-init` support
-    - [Get-OPNsenseImage](#get-opnsenseimage)
-    - [New-VMFromIsoImage](#new-vmfromisoimage-) (*)
-  - Other commands
-    - [Download-VerifiedFile](#download-verifiedfile)
-    - [Move-VMOffline](#move-vmoffline)
+
+- For Windows VMs
+  - [New-VMFromWindowsImage](#new-vmfromwindowsimage-) (*)
+  - [New-VHDXFromWindowsImage](#new-vhdxfromwindowsimage-) (*)
+  - [New-VMSession](#new-vmsession)
+  - [Set-NetIPAddressViaSession](#set-netipaddressviasession)
+  - [Set-NetIPv6AddressViaSession](#set-netipv6addressviasession)
+  - [Get-VirtioImage](#get-virtioimage)
+  - [Add-VirtioDrivers](#add-virtiodrivers)
+  - [Enable-RemoteManagementViaSession](#enable-remotemanagementviasession)
+- For Ubuntu VMs
+  - [Get-UbuntuImage](#get-ubuntuimage)
+  - [New-VMFromUbuntuImage](#new-vmfromubuntuimage-) (*)
+- For Debian VMs
+  - [Get-DebianImage](#get-debianimage)
+  - [New-VMFromDebianImage](#new-vmfromdebianimage-) (*)
+- For images with no `cloud-init` support
+  - [Get-OPNsenseImage](#get-opnsenseimage)
+  - [New-VMFromIsoImage](#new-vmfromisoimage-) (*)
+- Other commands
+  - [Download-VerifiedFile](#download-verifiedfile)
+  - [Move-VMOffline](#move-vmoffline)
 
 **(*) Requires administrative privileges**.
-
-
 
 # For Windows VMs
 
@@ -138,8 +130,6 @@ Returns the `VirtualMachine` created.
 
 **(*) Requires administrative privileges**.
 
-
-
 ## New-VHDXFromWindowsImage (*)
 
 ```powershell
@@ -148,13 +138,11 @@ New-VHDXFromWindowsImage.ps1 [-SourcePath] <string> [-Edition] <string> [[-Compu
 
 Creates a Windows VHDX from an ISO image. Similar to `New-VMFromWindowsImage` but without creating a VM.
 
-You can add [Windows VirtIO Drivers](https://pve.proxmox.com/wiki/Windows_VirtIO_Drivers) and the [QEMU Guest Agent](https://pve.proxmox.com/wiki/Qemu-guest-agent) with `-AddVirtioDrivers`. In this case you must provide the path of VirtIO ISO (see [`Get-VirtioImage`](#Get-VirtioImage)) to this parameter. This is useful if you wish to import the created VHDX in a KVM environment.
+You can add [Windows VirtIO Drivers](https://pve.proxmox.com/wiki/Windows_VirtIO_Drivers) and the [QEMU Guest Agent](https://pve.proxmox.com/wiki/Qemu-guest-agent) with `-AddVirtioDrivers`. In this case you must provide the path of VirtIO ISO (see [`Get-VirtioImage`](#get-virtioimage)) to this parameter. This is useful if you wish to import the created VHDX in a KVM environment.
 
 Returns the path for the VHDX file created.
 
 **(*) Requires administrative privileges**.
-
-
 
 ## New-VMSession
 
@@ -166,8 +154,6 @@ Creates a new `PSSession` into a VM. In case of error, keeps retrying until conn
 
 Returns the `PSSession` created.
 
-
-
 ## Set-NetIPAddressViaSession
 
 ```powershell
@@ -176,8 +162,6 @@ Set-NetIPAddressViaSession.ps1 [-Session] <PSSession[]> [[-AdapterName] <string>
 
 Sets IPv4 configuration for a Windows VM.
 
-
-
 ## Set-NetIPv6AddressViaSession
 
 ```powershell
@@ -185,8 +169,6 @@ Set-NetIPv6AddressViaSession.ps1 [-Session] <PSSession[]> [[-AdapterName] <strin
 ```
 
 Sets IPv6 configuration for a Windows VM.
-
-
 
 ## Get-VirtioImage
 
@@ -200,8 +182,6 @@ Use `-OutputPath` parameter to set download location. If not informed, the curre
 
 Returns the path for downloaded file.
 
-
-
 ## Add-VirtioDrivers
 
 ```powershell
@@ -210,7 +190,7 @@ Add-VirtioDrivers.ps1 [-VirtioIsoPath] <string> [-ImagePath] <string> [-Version]
 
 Adds [Windows VirtIO Drivers](https://pve.proxmox.com/wiki/Windows_VirtIO_Drivers) into a WIM or VHDX file.
 
-You must inform the path of VirtIO ISO with `-VirtioIsoPath`. You can download the latest image from [here](https://pve.proxmox.com/wiki/Windows_VirtIO_Drivers#Using_the_ISO). Or just use [`Get-VirtioImage.ps1`](#Get-VirtioImage).
+You must inform the path of VirtIO ISO with `-VirtioIsoPath`. You can download the latest image from [here](https://pve.proxmox.com/wiki/Windows_VirtIO_Drivers#Using_the_ISO). Or just use [`Get-VirtioImage.ps1`](#get-virtioimage).
 
 You must use `-ImagePath` to inform the path of file.
 
@@ -220,8 +200,6 @@ For WIM files you must also use `-ImageIndex` to inform the image index inside o
 
 Please note that -- unlike the `-AddVirtioDrivers` option from `New-VHDXFromWindowsImage` -- this script cannot install the [QEMU Guest Agent](https://pve.proxmox.com/wiki/Qemu-guest-agent) in an existing `vhdx`, as its operations are limited to the offline image (cannot run the installer).
 
-
-
 ## Enable-RemoteManagementViaSession
 
 ```powershell
@@ -229,8 +207,6 @@ Enable-RemoteManagementViaSession.ps1 [-Session] <PSSession[]> [<CommonParameter
 ```
 
 Enables Powershell Remoting, CredSSP server authentication and sets WinRM firewall rule to `Any` remote address (default: `LocalSubnet`).
-
-
 
 # For Ubuntu VMs
 
@@ -248,8 +224,6 @@ Use `-Previous` parameter to download the previous LTS image instead of the curr
 
 Returns the path for downloaded file.
 
-
-
 ## New-VMFromUbuntuImage (*)
 
 ```powershell
@@ -266,7 +240,7 @@ You must have [qemu-img](https://github.com/fdcastel/qemu-img-windows-x64) insta
 choco install qemu-img -y
 ```
 
-You can download Ubuntu cloud images from [here](https://cloud-images.ubuntu.com/releases/focal/release/) (get the `amd64.img` version). Or just use [`Get-UbuntuImage.ps1`](#Get-UbuntuImage).
+You can download Ubuntu cloud images from [here](https://cloud-images.ubuntu.com/releases/focal/release/) (get the `amd64.img` version). Or just use [`Get-UbuntuImage.ps1`](#get-ubuntuimage).
 
 You must use `-RootPassword` to set a password or `-RootPublicKey` to set a public key for default `ubuntu` user.
 
@@ -281,8 +255,6 @@ You may install Docker using `-InstallDocker` switch.
 Returns the `VirtualMachine` created.
 
 **(*) Requires administrative privileges**.
-
-
 
 ## Ubuntu: Example
 
@@ -310,8 +282,6 @@ $rootPublicKey = Get-Content "$env:USERPROFILE\.ssh\id_rsa.pub"
 ssh ubuntu@10.10.1.196
 ```
 
-
-
 # For Debian VMs
 
 ## Get-DebianImage
@@ -327,8 +297,6 @@ Use `-OutputPath` parameter to set download location. If not informed, the curre
 Use `-Previous` parameter to download the previous version instead of the current version.
 
 Returns the path for downloaded file.
-
-
 
 ## New-VMFromDebianImage (*)
 
@@ -346,7 +314,7 @@ You must have [qemu-img](https://github.com/fdcastel/qemu-img-windows-x64) insta
 choco install qemu-img -y
 ```
 
-You can download Debian cloud images from [here](https://cloud.debian.org/images/cloud/bullseye/daily) (get the `genericcloud-amd64 version`). Or just use [`Get-DebianImage.ps1`](#Get-DebianImage).
+You can download Debian cloud images from [here](https://cloud.debian.org/images/cloud/bullseye/daily) (get the `genericcloud-amd64 version`). Or just use [`Get-DebianImage.ps1`](#get-debianimage).
 
 You must use `-RootPassword` to set a password or `-RootPublicKey` to set a public key for default `debian` user.
 
@@ -361,8 +329,6 @@ You may install Docker using `-InstallDocker` switch.
 Returns the `VirtualMachine` created.
 
 **(*) Requires administrative privileges**.
-
-
 
 ## Debian: Example
 
@@ -390,8 +356,6 @@ $rootPublicKey = Get-Content "$env:USERPROFILE\.ssh\id_rsa.pub"
 ssh debian@10.10.1.197
 ```
 
-
-
 # For images with no `cloud-init` support
 
 ## Get-OPNsenseImage
@@ -405,8 +369,6 @@ Downloads latest OPNsense ISO image.
 Use `-OutputPath` parameter to set download location. If not informed, the current folder will be used.
 
 Returns the path for downloaded file.
-
-
 
 ## New-VMFromIsoImage (*)
 
@@ -425,8 +387,6 @@ Get-VMDvdDrive -VMName 'vm-name' | Remove-VMDvdDrive
 ```
 
 **(*) Requires administrative privileges**.
-
-
 
 ## OPNsense: Example
 
@@ -483,8 +443,6 @@ After the installation, remove the installation media with:
 Get-VMDvdDrive -VMName 'TstOpnRouter' | Remove-VMDvdDrive
 ```
 
-
-
 # Other commands
 
 ## Download-VerifiedFile
@@ -496,8 +454,6 @@ Download-VerifiedFile.ps1 [-Url] <string> [-ExpectedHash] <string> [[-TargetDire
 Downloads a file and validates its integrity through SHA256 hash verification.
 
 If the file is already present and the hashes match, the download is skipped.
-
-
 
 ## Move-VMOffline
 
