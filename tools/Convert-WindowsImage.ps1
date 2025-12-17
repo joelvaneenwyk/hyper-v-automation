@@ -1989,7 +1989,8 @@ You can use the fields below to configure the VHD or VHDX that you want to creat
 
             if (($openImage.ImageArchitecture -ne "ARM") -and # No virtualization platform for ARM images
                 ($openImage.ImageArchitecture -ne "ARM64") -and # No virtualization platform for ARM64 images
-                ($BCDinVHD -ne "NativeBoot")) { # User asked for a non-bootable image
+                ($BCDinVHD -ne "NativeBoot")) {
+                # User asked for a non-bootable image
                 if (Test-Path "$($systemDrive)\boot\bcd") {
                     Write-W2VInfo "Image already has BIOS BCD store..."
                 }
