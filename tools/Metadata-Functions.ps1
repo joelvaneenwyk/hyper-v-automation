@@ -11,14 +11,12 @@ function New-MetadataIso {
         [string]$NetworkConfig
     )
     
-    $tempPath = [System.IO.Path]::GetTempPath()
-    $metadataIso = Join-Path $tempPath "$VMName-metadata.iso"
-    
-    if (-not $PSCmdlet.ShouldProcess($metadataIso, "Create metadata ISO")) {
+    if (-not $PSCmdlet.ShouldProcess($VMName, "Create metadata ISO and temporary files")) {
         return
     }
     
     Write-Verbose 'Creating metadata ISO image...'
+    $tempPath = [System.IO.Path]::GetTempPath()
 
     # Creates temporary folder for ISO content.
     $metadataContentRoot = Join-Path $tempPath "$VMName-metadata"
