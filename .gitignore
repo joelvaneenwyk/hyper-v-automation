@@ -1,0 +1,46 @@
+# Test artifacts
+TestResults.xml
+coverage.xml
+*.trx
+
+# Documentation build output
+site/
+docs/reference/*.md
+!docs/reference/.gitkeep
+
+# PowerShell module cache
+PSGetModuleInfo.xml
+
+# IDE and editor files
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+
+# Windows specific
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Build artifacts
+bin/
+obj/
+*.dll
+*.exe
+*.pdb
+
+# Package directories
+packages/
+node_modules/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
