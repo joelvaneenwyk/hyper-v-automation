@@ -2,26 +2,26 @@
 
 [CmdletBinding()]
 param(
-    [Parameter(Mandatory=$true)]
+    [Parameter(Mandatory = $true)]
     [string]$SourcePath,
 
     [ValidateScript({
-        $existingVm = Get-VM -Name $_ -ErrorAction SilentlyContinue
-        if (-not $existingVm) {
-            return $True
-        }
-        throw "There is already a VM named '$VMName' in this server."
+            $existingVm = Get-VM -Name $_ -ErrorAction SilentlyContinue
+            if (-not $existingVm) {
+                return $True
+            }
+            throw "There is already a VM named '$VMName' in this server."
         
-    })]
-    [Parameter(Mandatory=$true)]
+        })]
+    [Parameter(Mandatory = $true)]
     [string]$VMName,
 
     [string]$FQDN = $VMName,
 
-    [Parameter(Mandatory=$true, ParameterSetName='RootPassword')]
+    [Parameter(Mandatory = $true, ParameterSetName = 'RootPassword')]
     [string]$RootPassword,
 
-    [Parameter(Mandatory=$true, ParameterSetName='RootPublicKey')]
+    [Parameter(Mandatory = $true, ParameterSetName = 'RootPublicKey')]
     [string]$RootPublicKey,
 
     [uint64]$VHDXSizeBytes,
@@ -35,57 +35,57 @@ param(
     [string]$SwitchName = 'SWITCH',
 
     [ValidateScript({
-        if ($_ -match '^([0-9A-Fa-f]{2}:){5}([0-9A-Fa-f]{2})$') {
-            return $True
-        }
-        throw "-MacAddress must be in format 'xx:xx:xx:xx:xx:xx'."
-    })]
+            if ($_ -match '^([0-9A-Fa-f]{2}:){5}([0-9A-Fa-f]{2})$') {
+                return $True
+            }
+            throw "-MacAddress must be in format 'xx:xx:xx:xx:xx:xx'."
+        })]
     [string]$MacAddress,
 
     [ValidateScript({
-        $sIp, $suffix = $_.Split('/')
-        if ($ip = $sIp -as [ipaddress]) {
-            $maxSuffix = if ($ip.AddressFamily -eq 'InterNetworkV6') { 128 } else { 32 }
-            if ($suffix -in 1..$maxSuffix) {
-                return $True
+            $sIp, $suffix = $_.Split('/')
+            if ($ip = $sIp -as [ipaddress]) {
+                $maxSuffix = if ($ip.AddressFamily -eq 'InterNetworkV6') { 128 } else { 32 }
+                if ($suffix -in 1..$maxSuffix) {
+                    return $True
+                }
+                throw "Invalid -IPAddress suffix ($suffix)."
             }
-            throw "Invalid -IPAddress suffix ($suffix)."
-        }
-        throw "Invalid -IPAddress ($sIp)."
-    })]
+            throw "Invalid -IPAddress ($sIp)."
+        })]
     [string]$IPAddress,
 
     [string]$Gateway,
 
-    [string[]]$DnsAddresses = @('1.1.1.1','1.0.0.1'),
+    [string[]]$DnsAddresses = @('1.1.1.1', '1.0.0.1'),
 
     [string]$InterfaceName = 'eth0',
 
     [string]$VlanId,
 
-    [Parameter(Mandatory=$false, ParameterSetName='RootPassword')]
-    [Parameter(Mandatory=$false, ParameterSetName='RootPublicKey')]
+    [Parameter(Mandatory = $false, ParameterSetName = 'RootPassword')]
+    [Parameter(Mandatory = $false, ParameterSetName = 'RootPublicKey')]
     [string]$SecondarySwitchName,
 
     [ValidateScript({
-        if ($_ -match '^([0-9A-Fa-f]{2}:){5}([0-9A-Fa-f]{2})$') {
-            return $True
-        }
-        throw "-SecondaryMacAddress must be in format 'xx:xx:xx:xx:xx:xx'."
-    })]
+            if ($_ -match '^([0-9A-Fa-f]{2}:){5}([0-9A-Fa-f]{2})$') {
+                return $True
+            }
+            throw "-SecondaryMacAddress must be in format 'xx:xx:xx:xx:xx:xx'."
+        })]
     [string]$SecondaryMacAddress,
 
     [ValidateScript({
-        $sIp, $suffix = $_.Split('/')
-        if ($ip = $sIp -as [ipaddress]) {
-            $maxSuffix = if ($ip.AddressFamily -eq 'InterNetworkV6') { 128 } else { 32 }
-            if ($suffix -in 1..$maxSuffix) {
-                return $True
+            $sIp, $suffix = $_.Split('/')
+            if ($ip = $sIp -as [ipaddress]) {
+                $maxSuffix = if ($ip.AddressFamily -eq 'InterNetworkV6') { 128 } else { 32 }
+                if ($suffix -in 1..$maxSuffix) {
+                    return $True
+                }
+                throw "Invalid -SecondaryIPAddress suffix ($suffix)."
             }
-            throw "Invalid -SecondaryIPAddress suffix ($suffix)."
-        }
-        throw "Invalid -SecondaryIPAddress ($sIp)."
-    })]
+            throw "Invalid -SecondaryIPAddress ($sIp)."
+        })]
     [string]$SecondaryIPAddress,
 
     [string]$SecondaryInterfaceName,
@@ -101,12 +101,12 @@ function Normalize-MacAddress ([string]$value) {
     $value.`
         Replace('-', '').`
         Replace(':', '').`
-        Insert(2,':').Insert(5,':').Insert(8,':').Insert(11,':').Insert(14,':').`
+        Insert(2, ':').Insert(5, ':').Insert(8, ':').Insert(11, ':').Insert(14, ':').`
         ToLowerInvariant()
 }
 
 # Get default VHD path (requires administrative privileges)
-$vmmsSettings = Get-WmiObject -namespace root\virtualization\v2 Msvm_VirtualSystemManagementServiceSettingData
+$vmmsSettings = Get-WmiObject -Namespace root\virtualization\v2 Msvm_VirtualSystemManagementServiceSettingData
 $vhdxPath = Join-Path $vmmsSettings.DefaultVirtualHardDiskPath "$VMName.vhdx"
 
 # Convert cloud image to VHDX
@@ -153,7 +153,7 @@ if ($VlanId) {
 }    
 if ($SecondarySwitchName) {
     # Add secondary network adapter
-    $eth1 = Add-VMNetworkAdapter -VMName $VMName -Name $SecondaryInterfaceName -SwitchName $SecondarySwitchName -PassThru
+    $eth1 = Add-VMNetworkAdapter -VMName $VMName -Name $SecondaryInterfaceName -SwitchName $SecondarySwitchName -Passthru
 
     if ($SecondaryMacAddress) {
         $SecondaryMacAddress = Normalize-MacAddress $SecondaryMacAddress
@@ -229,7 +229,8 @@ password: $RootPassword
 chpasswd: { expire: False }
 ssh_pwauth: True
 "@
-} elseif ($RootPublicKey) {
+}
+elseif ($RootPublicKey) {
     $sectionPasswd = @"
 ssh_authorized_keys:
   - $RootPublicKey
@@ -282,7 +283,8 @@ ethernets:
         on-link: true
 
 "@
-} else {
+}
+else {
     $NetworkConfig = @"
 version: 2
 ethernets:
@@ -306,7 +308,8 @@ if ($SecondarySwitchName) {
     addresses: [$SecondaryIPAddress]
 
 "@
-    } else {
+    }
+    else {
         $NetworkConfig += @"
   $($SecondaryInterfaceName):
     match:
@@ -339,7 +342,8 @@ Wait-VM -Name $VMName -For Heartbeat
 Write-Verbose 'Waiting for VM initial setup...'
 try {
     Wait-VM -Name $VMName -For Reboot
-} catch {
+}
+catch {
     # Win 2016 RTM doesn't have "Reboot" in WaitForVMTypes type. 
     #   Wait until heartbeat service stops responding.
     $heartbeatService = ($vm | Get-VMIntegrationService -Name 'Heartbeat')

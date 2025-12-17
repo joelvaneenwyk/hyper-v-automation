@@ -1,20 +1,20 @@
 [CmdletBinding()]
 param(
-    [Parameter(Mandatory=$true)]
+    [Parameter(Mandatory = $true)]
     [System.Management.Automation.Runspaces.PSSession[]]$Session,
 
     [string]$AdapterName = 'Ethernet',
 
-    [Parameter(Mandatory=$true)]
+    [Parameter(Mandatory = $true)]
     [string]$IPAddress,
 
-    [Parameter(Mandatory=$true)]
+    [Parameter(Mandatory = $true)]
     [byte]$PrefixLength,
     
-    [Parameter(Mandatory=$true)]
+    [Parameter(Mandatory = $true)]
     [string]$DefaultGateway,
     
-    [string[]]$DnsAddresses = @('8.8.8.8','8.8.4.4'),
+    [string[]]$DnsAddresses = @('8.8.8.8', '8.8.4.4'),
 
     [ValidateSet('Public', 'Private')]
     [string]$NetworkCategory = 'Public'

@@ -70,15 +70,18 @@ foreach ($file in $filesToFormat) {
 
             if ($Check) {
                 Write-Host "  ❌ $($file.FullName.Replace($repoRoot, '.'))" -ForegroundColor Red
-            } else {
+            }
+            else {
                 Write-Host "  ✓ Formatted: $($file.FullName.Replace($repoRoot, '.'))" -ForegroundColor Green
                 # Write formatted content back
                 Set-Content -Path $file.FullName -Value $formattedContent -NoNewline
             }
-        } else {
+        }
+        else {
             Write-Verbose "  Already formatted: $($file.FullName)"
         }
-    } catch {
+    }
+    catch {
         Write-Warning "  ⚠️  Could not format $($file.FullName): $_"
     }
 }
@@ -88,7 +91,8 @@ Write-Host ""
 if ($needsFormatting.Count -eq 0) {
     Write-Host "✓ All files are properly formatted!" -ForegroundColor Green
     exit 0
-} else {
+}
+else {
     if ($Check) {
         Write-Host "❌ $($needsFormatting.Count) file(s) need formatting:" -ForegroundColor Red
         $needsFormatting | ForEach-Object {
@@ -97,7 +101,8 @@ if ($needsFormatting.Count -eq 0) {
         Write-Host ""
         Write-Host "Run './tools/format.ps1' locally to fix formatting issues." -ForegroundColor Yellow
         exit 1
-    } else {
+    }
+    else {
         Write-Host "✓ Formatted $($needsFormatting.Count) file(s)" -ForegroundColor Green
         exit 0
     }

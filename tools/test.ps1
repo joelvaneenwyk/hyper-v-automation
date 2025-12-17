@@ -49,7 +49,7 @@ Set-StrictMode -Version Latest
 $repoRoot = Split-Path -Parent $PSScriptRoot
 
 # Ensure Pester is available (v5.x)
-$pesterModule = Get-Module -ListAvailable -Name Pester | Where-Object Version -ge '5.0.0' | Select-Object -First 1
+$pesterModule = Get-Module -ListAvailable -Name Pester | Where-Object Version -GE '5.0.0' | Select-Object -First 1
 
 if (-not $pesterModule) {
     Write-Host "Pester 5.x not found. Installing..." -ForegroundColor Yellow
@@ -117,7 +117,8 @@ if ($CodeCoverage) {
 if ($result.FailedCount -eq 0) {
     Write-Host "✓ All tests passed!" -ForegroundColor Green
     exit 0
-} else {
+}
+else {
     Write-Host "❌ $($result.FailedCount) test(s) failed" -ForegroundColor Red
     exit 1
 }

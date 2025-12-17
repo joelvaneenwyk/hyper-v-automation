@@ -21,11 +21,12 @@ $uncompressedIsoFile = Join-Path $OutputPath $uncompressedUrlFile
 
 if ([System.IO.File]::Exists($uncompressedIsoFile)) {
     Write-Verbose "File '$uncompressedIsoFile' already exists. Nothing to do."
-} else {
+}
+else {
     if ([System.IO.File]::Exists($isoFile)) {
         Write-Verbose "File '$isoFile' already exists."
-    } else
-    {
+    }
+    else {
         Write-Verbose "Downloading file '$isoFile'..."
 
         $client = New-Object System.Net.WebClient
@@ -33,8 +34,7 @@ if ([System.IO.File]::Exists($uncompressedIsoFile)) {
     }
 
     $7zCommand = Get-Command "7z.exe" -ErrorAction SilentlyContinue
-    if (-not $7zCommand) 
-    { 
+    if (-not $7zCommand) { 
         throw "7z.exe not found. Please install it with 'choco install 7zip -y'."
     }
 

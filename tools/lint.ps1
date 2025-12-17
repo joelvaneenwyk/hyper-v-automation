@@ -54,9 +54,9 @@ Write-Host ""
 $results = @(Invoke-ScriptAnalyzer -Path $repoRoot -Recurse -Settings $settingsPath -ExcludeRule PSReviewUnusedParameter)
 
 # Group results by severity
-$errorResults = @($results | Where-Object Severity -eq 'Error')
-$warningResults = @($results | Where-Object Severity -eq 'Warning')
-$informationalResults = @($results | Where-Object Severity -eq 'Information')
+$errorResults = @($results | Where-Object Severity -EQ 'Error')
+$warningResults = @($results | Where-Object Severity -EQ 'Warning')
+$informationalResults = @($results | Where-Object Severity -EQ 'Information')
 
 # Display results
 Write-Host "Analysis Results:" -ForegroundColor Cyan
@@ -101,10 +101,12 @@ $exitCode = 0
 if ($errorResults.Count -gt 0) {
     Write-Host "❌ Analysis failed with $($errorResults.Count) error(s)" -ForegroundColor Red
     $exitCode = 1
-} elseif ($FailOnWarning -and $warningResults.Count -gt 0) {
+}
+elseif ($FailOnWarning -and $warningResults.Count -gt 0) {
     Write-Host "❌ Analysis failed with $($warningResults.Count) warning(s) (strict mode)" -ForegroundColor Red
     $exitCode = 1
-} else {
+}
+else {
     Write-Host "✓ Analysis passed!" -ForegroundColor Green
 }
 

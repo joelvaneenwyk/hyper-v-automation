@@ -12,7 +12,8 @@ $ErrorActionPreference = 'Stop'
 if ($Previous) {
     $urlRoot = "https://cloud.debian.org/images/cloud/bookworm/latest/"
     $urlFile = "debian-12-genericcloud-amd64.qcow2"
-} else {
+}
+else {
     $urlRoot = 'https://cloud.debian.org/images/cloud/trixie/latest/'
     $urlFile = 'debian-13-genericcloud-amd64.qcow2'
 }
@@ -27,7 +28,8 @@ $imgFile = Join-Path $OutputPath $urlFile
 
 if ([System.IO.File]::Exists($imgFile)) {
     Write-Verbose "File '$imgFile' already exists. Nothing to do."
-} else {
+}
+else {
     Write-Verbose "Downloading file '$imgFile'..."
 
     $client = New-Object System.Net.WebClient

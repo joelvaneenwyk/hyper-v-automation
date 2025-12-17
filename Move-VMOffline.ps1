@@ -1,12 +1,12 @@
-﻿[CmdletBinding()]
+[CmdletBinding()]
 param(
-    [Parameter(Mandatory=$true)]
+    [Parameter(Mandatory = $true)]
     [string]$VMName,
     
-    [Parameter(Mandatory=$true)]
+    [Parameter(Mandatory = $true)]
     [string]$DestinationHost,
 
-    [Parameter(Mandatory=$true)]
+    [Parameter(Mandatory = $true)]
     [string]$CertificateThumbprint
 )
 
@@ -26,9 +26,9 @@ Enable-VMReplication -VMName $VMName -ReplicaServerName $DestinationHost -Authen
 $sourceVhdx = (Get-VM $VMName -ComputerName $DestinationHost | Get-VMHardDiskDrive).Path
 $targetVhdx = (Get-VM $VMName | Get-VMHardDiskDrive).Path
 $targetVhdx = Join-Path (Split-Path $targetVhdx -Parent) (Split-Path $sourceVhdx -Leaf)
-$vhds = @(@{'SourceFilePath' = $sourceVhdx; 'DestinationFilePath' = $targetVhdx})
+$vhds = @(@{'SourceFilePath' = $sourceVhdx; 'DestinationFilePath' = $targetVhdx })
 Invoke-Command -ComputerName $DestinationHost {
-  Move-VMStorage -VMName $using:VMName -VirtualMachinePath 'C:\Hyper-V\Virtual Machines' -SnapshotFilePath 'C:\Hyper-V\Snapshots' -VHDs $using:vhds
+    Move-VMStorage -VMName $using:VMName -VirtualMachinePath 'C:\Hyper-V\Virtual Machines' -SnapshotFilePath 'C:\Hyper-V\Snapshots' -Vhds $using:vhds
 }
 
 # Replicate

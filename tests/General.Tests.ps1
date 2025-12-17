@@ -43,7 +43,7 @@ Describe 'PowerShell Scripts Validity' {
     BeforeAll {
         # Find all PowerShell files
         $script:psFiles = @(Get-ChildItem -Path $repoRoot -Include '*.ps1', '*.psm1', '*.psd1' -Recurse -File |
-            Where-Object { $_.FullName -notmatch '[\\/]\.git[\\/]' })
+                Where-Object { $_.FullName -notmatch '[\\/]\.git[\\/]' })
     }
 
     It 'Has PowerShell files in repository' {
@@ -66,7 +66,7 @@ Describe 'PowerShell Scripts Validity' {
 
     Context 'Script Analysis' {
         It 'PSScriptAnalyzer module is available' {
-            $hasPSSA = Get-Module -ListAvailable -Name PSScriptAnalyzer
+            $hasPSSA = Get-Module -ListAvailable -name PSScriptAnalyzer
             $hasPSSA | Should -Not -BeNullOrEmpty
         }
     }

@@ -3,10 +3,10 @@
 
 [CmdletBinding()]
 param(
-    [Parameter(Mandatory=$true)]
+    [Parameter(Mandatory = $true)]
     [string]$SourcePath,
     
-    [Parameter(Mandatory=$true)]
+    [Parameter(Mandatory = $true)]
     [string]$Edition,
 
     [string]$ComputerName,
@@ -17,20 +17,20 @@ param(
 
     [string]$AdministratorPassword,
 
-    [Parameter(Mandatory=$true)]
+    [Parameter(Mandatory = $true)]
     [ValidateSet('Server2025Datacenter',
-                 'Server2025Standard',
-                 'Server2022Datacenter',
-                 'Server2022Standard',
-                 'Server2019Datacenter',
-                 'Server2019Standard',
-                 'Server2016Datacenter',
-                 'Server2016Standard',
-                 'Windows11Enterprise',
-                 'Windows11Professional',
-                 'Windows10Enterprise',
-                 'Windows10Professional',
-                 'Windows81Professional')]
+        'Server2025Standard',
+        'Server2022Datacenter',
+        'Server2022Standard',
+        'Server2019Datacenter',
+        'Server2019Standard',
+        'Server2016Datacenter',
+        'Server2016Standard',
+        'Windows11Enterprise',
+        'Windows11Professional',
+        'Windows10Enterprise',
+        'Windows10Professional',
+        'Windows81Professional')]
     [string]$Version,
 
     [string]$Locale = 'en-US',
@@ -40,8 +40,7 @@ param(
 
 $ErrorActionPreference = 'Stop'
 
-if (-not $VHDXPath)
-{
+if (-not $VHDXPath) {
     # Resolve path that might not exist -- https://stackoverflow.com/a/3040982
     $VHDXPath = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath(".\$($ComputerName).vhdx")
 }
@@ -55,7 +54,7 @@ if (-not $AdministratorPassword) {
     $AdministratorPassword = -join (
         (65..90) + (97..122) + (48..57) |
             Get-Random -Count 16 |
-                ForEach-Object {[char]$_}
+            ForEach-Object { [char]$_ }
     )
 }
 
@@ -74,14 +73,14 @@ if (Test-Path $mergeFolder) {
 New-Item -ItemType Directory -Path $mergeFolder -Force > $null
 
 $cwiArguments = @{
-    SourcePath = $SourcePath
-    Edition = $Edition
-    VHDPath = $vhdxPath
-    SizeBytes = $VHDXSizeBytes
-    VHDFormat = 'VHDX'
-    DiskLayout = 'UEFI'
+    SourcePath   = $SourcePath
+    Edition      = $Edition
+    VHDPath      = $vhdxPath
+    SizeBytes    = $VHDXSizeBytes
+    VHDFormat    = 'VHDX'
+    DiskLayout   = 'UEFI'
     UnattendPath = $unattendPath
-    MergeFolder = $mergeFolder
+    MergeFolder  = $mergeFolder
 }
 
 # Removes unattend.xml files after the setup is complete.
@@ -100,7 +99,7 @@ if ($AddVirtioDrivers) {
     . .\tools\Virtio-Functions.ps1
 
     With-IsoImage -IsoFileName $AddVirtioDrivers {
-        Param($virtioDriveLetter)
+        param($virtioDriveLetter)
 
         # Throws if the ISO does not contain Virtio drivers.
         $virtioDrivers = Get-VirtioDrivers -VirtioDriveLetter $virtioDriveLetter -Version $Version
@@ -111,7 +110,8 @@ if ($AddVirtioDrivers) {
 
         Convert-WindowsImage @cwiArguments -Driver $virtioDrivers
     }
-} else {
+}
+else {
     Convert-WindowsImage @cwiArguments
 }
 

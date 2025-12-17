@@ -18,7 +18,8 @@ $imgFile = Join-Path $OutputPath $urlFile
 
 if ([System.IO.File]::Exists($imgFile)) {
     Write-Verbose "File '$imgFile' already exists. Nothing to do."
-} else {
+}
+else {
     Write-Verbose "Downloading file '$imgFile'..."
 
     $client = New-Object System.Net.WebClient

@@ -2,10 +2,10 @@
 
 [CmdletBinding()]
 param(
-    [Parameter(Mandatory=$true)]
+    [Parameter(Mandatory = $true)]
     [string]$IsoPath,
     
-    [Parameter(Mandatory=$true)]
+    [Parameter(Mandatory = $true)]
     [string]$VMName,
 
     [uint64]$VHDXSizeBytes = 120GB,
@@ -41,13 +41,13 @@ function Normalize-MacAddress ([string]$value) {
     $value.`
         Replace('-', '').`
         Replace(':', '').`
-        Insert(2,':').Insert(5,':').Insert(8,':').Insert(11,':').Insert(14,':').`
+        Insert(2, ':').Insert(5, ':').Insert(8, ':').Insert(11, ':').Insert(14, ':').`
         ToLowerInvariant()
 }
 
 # Get default VHD path (requires administrative privileges)
-$vmms = Get-WmiObject -namespace root\virtualization\v2 Msvm_VirtualSystemManagementService
-$vmmsSettings = Get-WmiObject -namespace root\virtualization\v2 Msvm_VirtualSystemManagementServiceSettingData
+$vmms = Get-WmiObject -Namespace root\virtualization\v2 Msvm_VirtualSystemManagementService
+$vmmsSettings = Get-WmiObject -Namespace root\virtualization\v2 Msvm_VirtualSystemManagementServiceSettingData
 $vhdxPath = Join-Path $vmmsSettings.DefaultVirtualHardDiskPath "$VMName.vhdx"
 $metadataIso = Join-Path $vmmsSettings.DefaultVirtualHardDiskPath "$VMName-metadata.iso"
 
@@ -66,8 +66,8 @@ if ($EnableSecureBoot.IsPresent) {
     # Sets Secure Boot Template.
     #   Set-VMFirmware -SecureBootTemplate 'MicrosoftUEFICertificateAuthority' doesn't work anymore (!?).
     $vm | Set-VMFirmware -SecureBootTemplateId ([guid]'272e7447-90a4-4563-a4b9-8e4ab00526ce')
-} else 
-{
+}
+else {
     # Disables Secure Boot.
     $vm | Set-VMFirmware -EnableSecureBoot:Off
 }
@@ -84,7 +84,7 @@ if ($VlanId) {
 }    
 if ($SecondarySwitchName) {
     # Add secondary network adapter
-    $eth1 = Add-VMNetworkAdapter -VMName $VMName -Name $SecondaryInterfaceName -SwitchName $SecondarySwitchName -PassThru
+    $eth1 = Add-VMNetworkAdapter -VMName $VMName -Name $SecondaryInterfaceName -SwitchName $SecondarySwitchName -Passthru
 
     if ($SecondaryMacAddress) {
         $SecondaryMacAddress = Normalize-MacAddress $SecondaryMacAddress

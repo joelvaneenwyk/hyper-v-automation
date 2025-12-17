@@ -1,9 +1,9 @@
 [CmdletBinding()]
 param(
-    [Parameter(Mandatory=$true)]
+    [Parameter(Mandatory = $true)]
     [string]$VMName,
 
-    [Parameter(Mandatory=$true)]
+    [Parameter(Mandatory = $true)]
     [string]$AdministratorPassword,
 
     [string]$DomainName
@@ -11,7 +11,8 @@ param(
 
 if ($DomainName) {
     $userName = "$DomainName\administrator"
-} else {
+}
+else {
     $userName = 'administrator'
 }
 $pass = ConvertTo-SecureString $AdministratorPassword -AsPlainText -Force

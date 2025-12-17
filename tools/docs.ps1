@@ -79,25 +79,30 @@ foreach ($script in $scriptFiles) {
                 try {
                     Update-MarkdownHelp -Path $outputPath -ErrorAction Stop | Out-Null
                     $documented++
-                } catch {
+                }
+                catch {
                     Write-Host "    ⚠️  Could not update documentation: $_" -ForegroundColor Yellow
                     $skipped++
                 }
-            } else {
+            }
+            else {
                 try {
                     # Use Get-Help on the script path - platyPS handles this correctly
                     New-MarkdownHelp -Command $script.FullName -OutputFolder $referencePath -Force -ErrorAction Stop | Out-Null
                     $documented++
-                } catch {
+                }
+                catch {
                     Write-Host "    ⚠️  Could not generate documentation: $_" -ForegroundColor Yellow
                     $skipped++
                 }
             }
-        } else {
+        }
+        else {
             Write-Host "    ⚠️  Skipped: $($script.Name) (no comment-based help)" -ForegroundColor Yellow
             $skipped++
         }
-    } catch {
+    }
+    catch {
         Write-Host "    ❌ Error documenting $($script.Name): $_" -ForegroundColor Red
         $skipped++
     }

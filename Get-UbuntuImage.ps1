@@ -12,7 +12,8 @@ $ErrorActionPreference = 'Stop'
 if ($Previous) {
     $urlRoot = 'https://cloud-images.ubuntu.com/releases/jammy/release/'
     $urlFile = 'ubuntu-22.04-server-cloudimg-amd64.img'
-} else {
+}
+else {
     $urlRoot = 'https://cloud-images.ubuntu.com/releases/noble/release/'
     $urlFile = 'ubuntu-24.04-server-cloudimg-amd64.img'
 }
@@ -27,7 +28,8 @@ $imgFile = Join-Path $OutputPath $urlFile
 
 if ([System.IO.File]::Exists($imgFile)) {
     Write-Verbose "File '$imgFile' already exists. Nothing to do."
-} else {
+}
+else {
     Write-Verbose "Downloading file '$imgFile'..."
 
     $client = New-Object System.Net.WebClient

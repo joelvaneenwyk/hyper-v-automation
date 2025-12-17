@@ -2,38 +2,38 @@
 
 [CmdletBinding()]
 param(
-    [Parameter(Mandatory=$true)]
+    [Parameter(Mandatory = $true)]
     [string]$SourcePath,
     
-    [Parameter(Mandatory=$true)]
+    [Parameter(Mandatory = $true)]
     [string]$Edition,
 
-    [Parameter(Mandatory=$true)]
+    [Parameter(Mandatory = $true)]
     [string]$VMName,
 
-    [Parameter(Mandatory=$true)]
+    [Parameter(Mandatory = $true)]
     [uint64]$VHDXSizeBytes,
 
-    [Parameter(Mandatory=$true)]
+    [Parameter(Mandatory = $true)]
     [string]$AdministratorPassword,
 
-    [Parameter(Mandatory=$true)]
+    [Parameter(Mandatory = $true)]
     [ValidateSet('Server2025Datacenter',
-                 'Server2025Standard',
-                 'Server2022Datacenter',
-                 'Server2022Standard',
-                 'Server2019Datacenter',
-                 'Server2019Standard',
-                 'Server2016Datacenter',
-                 'Server2016Standard',
-                 'Windows11Enterprise',
-                 'Windows11Professional',
-                 'Windows10Enterprise',
-                 'Windows10Professional',
-                 'Windows81Professional')]
+        'Server2025Standard',
+        'Server2022Datacenter',
+        'Server2022Standard',
+        'Server2019Datacenter',
+        'Server2019Standard',
+        'Server2016Datacenter',
+        'Server2016Standard',
+        'Windows11Enterprise',
+        'Windows11Professional',
+        'Windows10Enterprise',
+        'Windows10Professional',
+        'Windows81Professional')]
     [string]$Version,
 
-    [Parameter(Mandatory=$true)]
+    [Parameter(Mandatory = $true)]
     [int64]$MemoryStartupBytes,
 
     [switch]$EnableDynamicMemory,
@@ -50,8 +50,8 @@ param(
 $ErrorActionPreference = 'Stop'
 
 # Get default VHD path (requires administrative privileges)
-$vmms = Get-WmiObject -namespace root\virtualization\v2 Msvm_VirtualSystemManagementService
-$vmmsSettings = Get-WmiObject -namespace root\virtualization\v2 Msvm_VirtualSystemManagementServiceSettingData
+$vmms = Get-WmiObject -Namespace root\virtualization\v2 Msvm_VirtualSystemManagementService
+$vmmsSettings = Get-WmiObject -Namespace root\virtualization\v2 Msvm_VirtualSystemManagementServiceSettingData
 $vhdxPath = Join-Path $vmmsSettings.DefaultVirtualHardDiskPath "$VMName.vhdx"
 
 # Create VHDX from ISO image
@@ -63,11 +63,11 @@ $vm = New-VM -Name $VMName -Generation 2 -MemoryStartupBytes $MemoryStartupBytes
 $vm | Set-VMProcessor -Count $VMProcessorCount
 $vm | Get-VMIntegrationService |
     Where-Object { $_ -is [Microsoft.HyperV.PowerShell.GuestServiceInterfaceComponent] } |
-        Enable-VMIntegrationService -Passthru
+    Enable-VMIntegrationService -Passthru
 $vm | Set-VMMemory -DynamicMemoryEnabled:$EnableDynamicMemory.IsPresent
 
 if ($VMMacAddress) {
-    $vm | Set-VMNetworkAdapter -StaticMacAddress ($VMMacAddress -replace ':','')
+    $vm | Set-VMNetworkAdapter -StaticMacAddress ($VMMacAddress -replace ':', '')
 }
 # Disable Automatic Checkpoints (doesn't exist in Server 2016)
 $command = Get-Command Set-VM
