@@ -98,7 +98,6 @@ param(
 
 $ErrorActionPreference = 'Stop'
 
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseApprovedVerbs', '', Justification = 'Normalize is descriptive and commonly used in this context')]
 function Normalize-MacAddress ([string]$value) {
     $value.`
         Replace('-', '').`

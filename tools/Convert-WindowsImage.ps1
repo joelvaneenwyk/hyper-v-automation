@@ -667,7 +667,6 @@ You can use the fields below to configure the VHD or VHDX that you want to creat
 
             # Set a global variable containing the name of the mounted registry key
             # so we can unmount it if there's an error.
-            [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidGlobalVars', '', Justification = 'Global variable needed for cleanup in error scenarios')]
             $global:mountedHive = $mountKey
 
             return $mountKey
@@ -693,7 +692,6 @@ You can use the fields below to configure the VHD or VHDX that you want to creat
 
             Run-Executable -Executable $regPath -Arguments $regArgs
 
-            [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidGlobalVars', '', Justification = 'Clearing global variable used for error cleanup')]
             $global:mountedHive = $null
         }
 
@@ -803,7 +801,6 @@ You can use the fields below to configure the VHD or VHDX that you want to creat
         ##########################################################################################
 
         function
-        [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseApprovedVerbs', '', Justification = 'Run is descriptive for executing external processes')]
         Run-Executable {
             <#
                 .SYNOPSIS
@@ -2293,7 +2290,6 @@ You can use the fields below to configure the VHD or VHDX that you want to creat
 
 
 function
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Function adds multiple type definitions, plural is appropriate')]
 Add-WindowsImageTypes {
     $code = @"
 using System;
