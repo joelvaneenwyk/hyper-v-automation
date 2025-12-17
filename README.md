@@ -16,6 +16,8 @@ To download all scripts into your `$env:TEMP` folder:
 iex (iwr 'bit.ly/h-v-a' -UseBasicParsing)
 ```
 
+If you already cloned the repo, you can refresh from GitHub with [bootstrap.ps1](bootstrap.ps1): it downloads the current archive into `%TEMP%`, extracts it, and switches the working directory to the extracted folder.
+
 # Examples
 
 ## Create a new VM for Hyper-V
@@ -88,33 +90,48 @@ Once the VM is running, ensure that the [QEMU Guest Agent](https://pve.proxmox.c
 
 # Command summary
 
+- Setup
+  - [bootstrap.ps1](bootstrap.ps1) — download and unpack the latest archive into `%TEMP%`
 - For Windows VMs
-  - [New-VMFromWindowsImage](#new-vmfromwindowsimage-) (*)
-  - [New-VHDXFromWindowsImage](#new-vhdxfromwindowsimage-) (*)
-  - [New-VMSession](#new-vmsession)
-  - [Set-NetIPAddressViaSession](#set-netipaddressviasession)
-  - [Set-NetIPv6AddressViaSession](#set-netipv6addressviasession)
-  - [Get-VirtioImage](#get-virtioimage)
-  - [Add-VirtioDrivers](#add-virtiodrivers)
-  - [Enable-RemoteManagementViaSession](#enable-remotemanagementviasession)
+  - [New-VMFromWindowsImage.ps1](New-VMFromWindowsImage.ps1) — see [details](#new-vmfromwindowsimage-) (*)
+  - [New-VHDXFromWindowsImage.ps1](New-VHDXFromWindowsImage.ps1) — see [details](#new-vhdxfromwindowsimage-) (*)
+  - [New-VMSession.ps1](New-VMSession.ps1) — see [details](#new-vmsession)
+  - [Set-NetIPAddressViaSession.ps1](Set-NetIPAddressViaSession.ps1) — see [details](#set-netipaddressviasession)
+  - [Set-NetIPv6AddressViaSession.ps1](Set-NetIPv6AddressViaSession.ps1) — see [details](#set-netipv6addressviasession)
+  - [Get-VirtioImage.ps1](Get-VirtioImage.ps1) — see [details](#get-virtioimage)
+  - [Add-VirtioDrivers.ps1](Add-VirtioDrivers.ps1) — see [details](#add-virtiodrivers)
+  - [Enable-RemoteManagementViaSession.ps1](Enable-RemoteManagementViaSession.ps1) — see [details](#enable-remotemanagementviasession)
 - For Ubuntu VMs
-  - [Get-UbuntuImage](#get-ubuntuimage)
-  - [New-VMFromUbuntuImage](#new-vmfromubuntuimage-) (*)
+  - [Get-UbuntuImage.ps1](Get-UbuntuImage.ps1) — see [details](#get-ubuntuimage)
+  - [New-VMFromUbuntuImage.ps1](New-VMFromUbuntuImage.ps1) — see [details](#new-vmfromubuntuimage-) (*)
 - For Debian VMs
-  - [Get-DebianImage](#get-debianimage)
-  - [New-VMFromDebianImage](#new-vmfromdebianimage-) (*)
+  - [Get-DebianImage.ps1](Get-DebianImage.ps1) — see [details](#get-debianimage)
+  - [New-VMFromDebianImage.ps1](New-VMFromDebianImage.ps1) — see [details](#new-vmfromdebianimage-) (*)
 - For images with no `cloud-init` support
-  - [Get-OPNsenseImage](#get-opnsenseimage)
-  - [New-VMFromIsoImage](#new-vmfromisoimage-) (*)
+  - [Get-OPNsenseImage.ps1](Get-OPNsenseImage.ps1) — see [details](#get-opnsenseimage)
+  - [New-VMFromIsoImage.ps1](New-VMFromIsoImage.ps1) — see [details](#new-vmfromisoimage-) (*)
 - Other commands
-  - [Download-VerifiedFile](#download-verifiedfile)
-  - [Move-VMOffline](#move-vmoffline)
+  - [Download-VerifiedFile.ps1](Download-VerifiedFile.ps1) — see [details](#download-verifiedfile)
+  - [Move-VMOffline.ps1](Move-VMOffline.ps1) — see [details](#move-vmoffline)
+- Helpers and tools
+  - [New-WindowsUnattendFile.ps1](New-WindowsUnattendFile.ps1) — see [details](#new-windowsunattendfile)
+  - [tools/Convert-WindowsImage.ps1](tools/Convert-WindowsImage.ps1) — see [details](#convert-windowsimage)
+  - [tools/Metadata-Functions.ps1](tools/Metadata-Functions.ps1) — see [details](#metadata-functions)
+  - [tools/Virtio-Functions.ps1](tools/Virtio-Functions.ps1) — see [details](#virtio-functions)
 
 **(*) Requires administrative privileges**.
+
+# bootstrap.ps1
+
+Script: [bootstrap.ps1](bootstrap.ps1)
+
+Downloads the latest master ZIP from GitHub into `%TEMP%`, extracts it, and changes the working directory to the extracted folder. Run it when you want a fresh copy of all scripts without cloning the repo.
 
 # For Windows VMs
 
 ## New-VMFromWindowsImage (*)
+
+Script: [New-VMFromWindowsImage.ps1](New-VMFromWindowsImage.ps1)
 
 ```powershell
 New-VMFromWindowsImage.ps1 [-SourcePath] <string> [-Edition] <string> [-VMName] <string> [-VHDXSizeBytes] <uint64> [-AdministratorPassword] <string> [-Version] <string> [-MemoryStartupBytes] <long> [[-VMProcessorCount] <long>] [[-VMSwitchName] <string>] [[-VMMacAddress] <string>] [[-Locale] <string>] [-EnableDynamicMemory] [<CommonParameters>]
@@ -132,19 +149,23 @@ Returns the `VirtualMachine` created.
 
 ## New-VHDXFromWindowsImage (*)
 
+Script: [New-VHDXFromWindowsImage.ps1](New-VHDXFromWindowsImage.ps1)
+
 ```powershell
 New-VHDXFromWindowsImage.ps1 [-SourcePath] <string> [-Edition] <string> [[-ComputerName] <string>] [[-VHDXPath] <string>] [[-VHDXSizeBytes] <uint64>] [[-AdministratorPassword] <string>] [-Version] <string> [[-Locale] <string>] [[-AddVirtioDrivers] <string>] [<CommonParameters>]
 ```
 
-Creates a Windows VHDX from an ISO image. Similar to `New-VMFromWindowsImage` but without creating a VM.
+Creates a Windows VHDX from an ISO image. Similar to [New-VMFromWindowsImage.ps1](New-VMFromWindowsImage.ps1) but without creating a VM.
 
-You can add [Windows VirtIO Drivers](https://pve.proxmox.com/wiki/Windows_VirtIO_Drivers) and the [QEMU Guest Agent](https://pve.proxmox.com/wiki/Qemu-guest-agent) with `-AddVirtioDrivers`. In this case you must provide the path of VirtIO ISO (see [`Get-VirtioImage`](#get-virtioimage)) to this parameter. This is useful if you wish to import the created VHDX in a KVM environment.
+You can add [Windows VirtIO Drivers](https://pve.proxmox.com/wiki/Windows_VirtIO_Drivers) and the [QEMU Guest Agent](https://pve.proxmox.com/wiki/Qemu-guest-agent) with `-AddVirtioDrivers`. In this case you must provide the path of VirtIO ISO (see [Get-VirtioImage.ps1](#get-virtioimage)) to this parameter. This is useful if you wish to import the created VHDX in a KVM environment.
 
 Returns the path for the VHDX file created.
 
 **(*) Requires administrative privileges**.
 
 ## New-VMSession
+
+Script: [New-VMSession.ps1](New-VMSession.ps1)
 
 ```powershell
 New-VMSession.ps1 [-VMName] <string> [-AdministratorPassword] <string> [[-DomainName] <string>] [<CommonParameters>]
@@ -156,6 +177,8 @@ Returns the `PSSession` created.
 
 ## Set-NetIPAddressViaSession
 
+Script: [Set-NetIPAddressViaSession.ps1](Set-NetIPAddressViaSession.ps1)
+
 ```powershell
 Set-NetIPAddressViaSession.ps1 [-Session] <PSSession[]> [[-AdapterName] <string>] [-IPAddress] <string> [-PrefixLength] <byte> [-DefaultGateway] <string> [[-DnsAddresses] <string[]>] [[-NetworkCategory] <string>] [<CommonParameters>]
 ```
@@ -164,6 +187,8 @@ Sets IPv4 configuration for a Windows VM.
 
 ## Set-NetIPv6AddressViaSession
 
+Script: [Set-NetIPv6AddressViaSession.ps1](Set-NetIPv6AddressViaSession.ps1)
+
 ```powershell
 Set-NetIPv6AddressViaSession.ps1 [-Session] <PSSession[]> [[-AdapterName] <string>] [-IPAddress] <ipaddress> [-PrefixLength] <byte> [[-DnsAddresses] <string[]>] [<CommonParameters>]
 ```
@@ -171,6 +196,8 @@ Set-NetIPv6AddressViaSession.ps1 [-Session] <PSSession[]> [[-AdapterName] <strin
 Sets IPv6 configuration for a Windows VM.
 
 ## Get-VirtioImage
+
+Script: [Get-VirtioImage.ps1](Get-VirtioImage.ps1)
 
 ```powershell
 Get-VirtioImage.ps1 [[-OutputPath] <string>] [<CommonParameters>]
@@ -184,13 +211,15 @@ Returns the path for downloaded file.
 
 ## Add-VirtioDrivers
 
+Script: [Add-VirtioDrivers.ps1](Add-VirtioDrivers.ps1)
+
 ```powershell
 Add-VirtioDrivers.ps1 [-VirtioIsoPath] <string> [-ImagePath] <string> [-Version] <string> [[-ImageIndex] <int>] [<CommonParameters>]
 ```
 
 Adds [Windows VirtIO Drivers](https://pve.proxmox.com/wiki/Windows_VirtIO_Drivers) into a WIM or VHDX file.
 
-You must inform the path of VirtIO ISO with `-VirtioIsoPath`. You can download the latest image from [here](https://pve.proxmox.com/wiki/Windows_VirtIO_Drivers#Using_the_ISO). Or just use [`Get-VirtioImage.ps1`](#get-virtioimage).
+You must inform the path of VirtIO ISO with `-VirtioIsoPath`. You can download the latest image from [here](https://pve.proxmox.com/wiki/Windows_VirtIO_Drivers#Using_the_ISO). Or just use [Get-VirtioImage.ps1](#get-virtioimage).
 
 You must use `-ImagePath` to inform the path of file.
 
@@ -198,9 +227,25 @@ You may use `-Version` to specify the Windows version of the image (recommended)
 
 For WIM files you must also use `-ImageIndex` to inform the image index inside of WIM. For VHDX files the image index must be always `1` (the default).
 
-Please note that -- unlike the `-AddVirtioDrivers` option from `New-VHDXFromWindowsImage` -- this script cannot install the [QEMU Guest Agent](https://pve.proxmox.com/wiki/Qemu-guest-agent) in an existing `vhdx`, as its operations are limited to the offline image (cannot run the installer).
+Please note that -- unlike the `-AddVirtioDrivers` option from [New-VHDXFromWindowsImage.ps1](New-VHDXFromWindowsImage.ps1) -- this script cannot install the [QEMU Guest Agent](https://pve.proxmox.com/wiki/Qemu-guest-agent) in an existing `vhdx`, as its operations are limited to the offline image (cannot run the installer).
+
+## New-WindowsUnattendFile
+
+Script: [New-WindowsUnattendFile.ps1](New-WindowsUnattendFile.ps1)
+
+```powershell
+New-WindowsUnattendFile.ps1 [-AdministratorPassword] <string> [-Version] <string> [[-ComputerName] <string>] [[-FilePath] <string>] [[-Locale] <string>] [-AddVirtioDrivers] [<CommonParameters>]
+```
+
+Creates an unattended answer file tailored for the specified Windows `-Version` (supports Server 2016–2025, Windows 8.1–11). The administrator password is encrypted in the XML and written to `-FilePath` (defaults to `%TEMP%\unattend.xml`).
+
+- `-ComputerName` lets you pre-set or use `*` (default) to randomize during setup.
+- `-Locale` overrides the default `en-US` input/system/user locale entries.
+- `-AddVirtioDrivers` appends a synchronous command to install VirtIO and QEMU Guest Agent MSI when the OS specializes.
 
 ## Enable-RemoteManagementViaSession
+
+Script: [Enable-RemoteManagementViaSession.ps1](Enable-RemoteManagementViaSession.ps1)
 
 ```powershell
 Enable-RemoteManagementViaSession.ps1 [-Session] <PSSession[]> [<CommonParameters>]
@@ -211,6 +256,8 @@ Enables Powershell Remoting, CredSSP server authentication and sets WinRM firewa
 # For Ubuntu VMs
 
 ## Get-UbuntuImage
+
+Script: [Get-UbuntuImage.ps1](Get-UbuntuImage.ps1)
 
 ```powershell
 Get-UbuntuImage.ps1 [[-OutputPath] <string>] [-Previous] [<CommonParameters>]
@@ -226,6 +273,8 @@ Returns the path for downloaded file.
 
 ## New-VMFromUbuntuImage (*)
 
+Script: [New-VMFromUbuntuImage.ps1](New-VMFromUbuntuImage.ps1)
+
 ```powershell
 New-VMFromUbuntuImage.ps1 -SourcePath <string> -VMName <string> -RootPassword <string> [-FQDN <string>] [-VHDXSizeBytes <uint64>] [-MemoryStartupBytes <long>] [-EnableDynamicMemory] [-ProcessorCount <long>] [-SwitchName <string>] [-MacAddress <string>] [-IPAddress <string>] [-Gateway <string>] [-DnsAddresses <string[]>] [-InterfaceName <string>] [-VlanId <string>] [-SecondarySwitchName <string>] [-SecondaryMacAddress <string>] [-SecondaryIPAddress <string>] [-SecondaryInterfaceName <string>] [-SecondaryVlanId <string>] [-InstallDocker] [<CommonParameters>]
 
@@ -236,11 +285,11 @@ Creates a Ubuntu VM from Ubuntu Cloud image.
 
 You must have [qemu-img](https://github.com/fdcastel/qemu-img-windows-x64) installed. If you have [chocolatey](https://chocolatey.org/) you can install it with:
 
-```
+```powershell
 choco install qemu-img -y
 ```
 
-You can download Ubuntu cloud images from [here](https://cloud-images.ubuntu.com/releases/focal/release/) (get the `amd64.img` version). Or just use [`Get-UbuntuImage.ps1`](#get-ubuntuimage).
+You can download Ubuntu cloud images from [here](https://cloud-images.ubuntu.com/releases/focal/release/) (get the `amd64.img` version). Or just use [Get-UbuntuImage.ps1](#get-ubuntuimage).
 
 You must use `-RootPassword` to set a password or `-RootPublicKey` to set a public key for default `ubuntu` user.
 
@@ -286,6 +335,8 @@ ssh ubuntu@10.10.1.196
 
 ## Get-DebianImage
 
+Script: [Get-DebianImage.ps1](Get-DebianImage.ps1)
+
 ```powershell
 Get-DebianImage.ps1 [[-OutputPath] <string>] [-Previous] [<CommonParameters>]
 ```
@@ -300,6 +351,8 @@ Returns the path for downloaded file.
 
 ## New-VMFromDebianImage (*)
 
+Script: [New-VMFromDebianImage.ps1](New-VMFromDebianImage.ps1)
+
 ```powershell
 New-VMFromDebianImage.ps1 -SourcePath <string> -VMName <string> -RootPassword <string> [-FQDN <string>] [-VHDXSizeBytes <uint64>] [-MemoryStartupBytes <long>] [-EnableDynamicMemory] [-ProcessorCount <long>] [-SwitchName <string>] [-MacAddress <string>] [-IPAddress <string>] [-Gateway <string>] [-DnsAddresses <string[]>] [-InterfaceName <string>] [-VlanId <string>] [-SecondarySwitchName <string>] [-SecondaryMacAddress <string>] [-SecondaryIPAddress <string>] [-SecondaryInterfaceName <string>] [-SecondaryVlanId <string>] [-InstallDocker] [<CommonParameters>]
 
@@ -310,11 +363,11 @@ Creates a Debian VM from Debian Cloud image.
 
 You must have [qemu-img](https://github.com/fdcastel/qemu-img-windows-x64) installed. If you have [chocolatey](https://chocolatey.org/) you can install it with:
 
-```
+```powershell
 choco install qemu-img -y
 ```
 
-You can download Debian cloud images from [here](https://cloud.debian.org/images/cloud/bullseye/daily) (get the `genericcloud-amd64 version`). Or just use [`Get-DebianImage.ps1`](#get-debianimage).
+You can download Debian cloud images from [here](https://cloud.debian.org/images/cloud/bullseye/daily) (get the `genericcloud-amd64 version`). Or just use [Get-DebianImage.ps1](#get-debianimage).
 
 You must use `-RootPassword` to set a password or `-RootPublicKey` to set a public key for default `debian` user.
 
@@ -360,6 +413,8 @@ ssh debian@10.10.1.197
 
 ## Get-OPNsenseImage
 
+Script: [Get-OPNsenseImage.ps1](Get-OPNsenseImage.ps1)
+
 ```powershell
 Get-OPNsenseImage.ps1 [[-OutputPath] <string>] [<CommonParameters>]
 ```
@@ -371,6 +426,8 @@ Use `-OutputPath` parameter to set download location. If not informed, the curre
 Returns the path for downloaded file.
 
 ## New-VMFromIsoImage (*)
+
+Script: [New-VMFromIsoImage.ps1](New-VMFromIsoImage.ps1)
 
 ```powershell
 New-VMFromIsoImage.ps1 [-IsoPath] <string> [-VMName] <string> [[-VHDXSizeBytes] <uint64>] [[-MemoryStartupBytes] <long>] [[-ProcessorCount] <long>] [[-SwitchName] <string>] [[-MacAddress] <string>] [[-InterfaceName] <string>] [[-VlanId] <string>] [[-SecondarySwitchName] <string>] [[-SecondaryMacAddress] <string>] [[-SecondaryInterfaceName] <string>] [[-SecondaryVlanId] <string>] [-EnableDynamicMemory] [-EnableSecureBoot] [<CommonParameters>]
@@ -447,6 +504,8 @@ Get-VMDvdDrive -VMName 'TstOpnRouter' | Remove-VMDvdDrive
 
 ## Download-VerifiedFile
 
+Script: [Download-VerifiedFile.ps1](Download-VerifiedFile.ps1)
+
 ```powershell
 Download-VerifiedFile.ps1 [-Url] <string> [-ExpectedHash] <string> [[-TargetDirectory] <string>] [<CommonParameters>]
 ```
@@ -457,8 +516,41 @@ If the file is already present and the hashes match, the download is skipped.
 
 ## Move-VMOffline
 
+Script: [Move-VMOffline.ps1](Move-VMOffline.ps1)
+
 ```powershell
 Move-VMOffline.ps1 [-VMName] <string> [-DestinationHost] <string> [-CertificateThumbprint] <string> [<CommonParameters>]
 ```
 
 Uses Hyper-V replica to move a VM between hosts not joined in a domain.
+
+# Helpers and tools
+
+## Convert-WindowsImage
+
+Script: [tools/Convert-WindowsImage.ps1](tools/Convert-WindowsImage.ps1)
+
+```powershell
+Convert-WindowsImage.ps1 -SourcePath <string> [-Edition <string[]>] [-VHDPath <string>] [-WorkingDirectory <string>] [-TempDirectory <string>] [-SizeBytes <ulong>] [-VHDFormat <VHD|VHDX|AUTO>] [-DiskLayout <BIOS|UEFI|WindowsToGo>] [-UnattendPath <string>] [-MergeFolder <string>] [-Driver <string[]>] [-Feature <string[]>] [-Package <string[]>] [-BCDBoot <string>] [-BCDinVHD <NativeBoot|VirtualMachine>] [-ExpandOnNativeBoot <bool>] [-RemoteDesktopEnable] [-Passthru] [-CacheSource] [-ShowUI] [-EnableDebugger <None|Serial|1394|USB|Network|Local> <debugger options>] [-DismPath <string>] [-ApplyEA]
+```
+
+Upstream Microsoft script to create bootable VHD/VHDX images from Windows ISOs or WIMs. Supports injecting unattend files, drivers, packages, features, debugger settings, and custom merge folders. Use `Get-Help ./tools/Convert-WindowsImage.ps1 -Detailed` for the exhaustive parameter set and debugger sub-parameters.
+
+## Metadata-Functions
+
+Script: [tools/Metadata-Functions.ps1](tools/Metadata-Functions.ps1)
+
+Provides helpers for generating cloud-init metadata ISOs. Primary function:
+
+- `New-MetadataIso -VMName <string> -Metadata <string> -UserData <string> [-NetworkConfig <string>]` — writes meta-data, user-data, and optional network-config into a temp folder and packages them into a CIDATA ISO.
+
+## Virtio-Functions
+
+Script: [tools/Virtio-Functions.ps1](tools/Virtio-Functions.ps1)
+
+Helper functions to mount ISO images and inject VirtIO drivers into Windows images:
+
+- `Get-VirtioDriverFolderName -Version <string>` — maps Windows versions to VirtIO driver subfolders.
+- `Get-VirtioDrivers -VirtioDriveLetter <string> -Version <string>` — returns driver folders from a mounted VirtIO ISO; throws if media is invalid.
+- `With-IsoImage -IsoFileName <string> -ScriptBlock <scriptblock>` — mounts an ISO, executes the scriptblock with drive letter, then dismounts.
+- `With-WindowsImage -ImagePath <string> -ImageIndex <int> -VirtioDriveLetter <string> -ScriptBlock <scriptblock>` — mounts a Windows image index, runs the scriptblock with the mount path, then saves/dismounts.
