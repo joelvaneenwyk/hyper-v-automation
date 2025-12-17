@@ -275,7 +275,7 @@ Convert-WindowsImage {
         $Package,
 
         [Parameter(ParameterSetName = "SRC")]
-        [switch]
+        [bool]
         $ExpandOnNativeBoot = $true,
 
         [Parameter(ParameterSetName = "SRC")]
@@ -667,6 +667,7 @@ You can use the fields below to configure the VHD or VHDX that you want to creat
 
             # Set a global variable containing the name of the mounted registry key
             # so we can unmount it if there's an error.
+            [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidGlobalVars', '', Justification = 'Global variable needed for cleanup in error scenarios')]
             $global:mountedHive = $mountKey
 
             return $mountKey
@@ -692,6 +693,7 @@ You can use the fields below to configure the VHD or VHDX that you want to creat
 
             Run-Executable -Executable $regPath -Arguments $regArgs
 
+            [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidGlobalVars', '', Justification = 'Clearing global variable used for error cleanup')]
             $global:mountedHive = $null
         }
 

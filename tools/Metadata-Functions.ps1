@@ -2,12 +2,15 @@
 # Functions for working with cloud-init Metadata drives.
 #
 
-function New-MetadataIso(
-    [string]$VMName,
-    [string]$Metadata,
-    [string]$UserData,
-    [string]$NetworkConfig
-) {
+function New-MetadataIso {
+    [CmdletBinding(SupportsShouldProcess = $true)]
+    param(
+        [string]$VMName,
+        [string]$Metadata,
+        [string]$UserData,
+        [string]$NetworkConfig
+    )
+    
     Write-Verbose 'Creating metadata ISO image...'
     $tempPath = [System.IO.Path]::GetTempPath()
 
