@@ -99,7 +99,6 @@ function New-VMFromWindowsImage {
         [string]$Locale = 'en-US'
     )
 
-    #Requires -RunAsAdministrator
 
     $ErrorActionPreference = 'Stop'
 

@@ -38,6 +38,36 @@ Describe 'Repository Structure' {
         $testsPath = Join-Path $repoRoot 'tests'
         $testsPath | Should -Exist
     }
+
+    It 'Has src directory' {
+        $srcPath = Join-Path $repoRoot 'src'
+        $srcPath | Should -Exist
+    }
+
+    It 'Has HyperVAutomation module directory' {
+        $modulePath = Join-Path $repoRoot 'src/HyperVAutomation'
+        $modulePath | Should -Exist
+    }
+
+    It 'Has module manifest' {
+        $manifestPath = Join-Path $repoRoot 'src/HyperVAutomation/HyperVAutomation.psd1'
+        $manifestPath | Should -Exist
+    }
+
+    It 'Has root module file' {
+        $moduleFilePath = Join-Path $repoRoot 'src/HyperVAutomation/HyperVAutomation.psm1'
+        $moduleFilePath | Should -Exist
+    }
+
+    It 'Has Public functions directory' {
+        $publicPath = Join-Path $repoRoot 'src/HyperVAutomation/Public'
+        $publicPath | Should -Exist
+    }
+
+    It 'Has Private functions directory' {
+        $privatePath = Join-Path $repoRoot 'src/HyperVAutomation/Private'
+        $privatePath | Should -Exist
+    }
 }
 
 Describe 'PowerShell Scripts Validity' {
@@ -113,5 +143,69 @@ Describe 'Hello World Test' {
 
     It 'PowerShell version is available' {
         $PSVersionTable.PSVersion | Should -Not -BeNullOrEmpty
+    }
+}
+
+Describe 'Module Structure' {
+    BeforeAll {
+        $script:manifestPath = Join-Path $repoRoot 'src/HyperVAutomation/HyperVAutomation.psd1'
+        $script:modulePath = Join-Path $repoRoot 'src/HyperVAutomation/HyperVAutomation.psm1'
+    }
+
+    It 'Module manifest is valid' {
+        { Test-ModuleManifest -Path $script:manifestPath -ErrorAction Stop } | Should -Not -Throw
+    }
+
+    It 'Module can be imported' {
+        { Import-Module $script:manifestPath -Force -ErrorAction Stop } | Should -Not -Throw
+    }
+
+    Context 'Module Functions' {
+        BeforeAll {
+            Import-Module $script:manifestPath -Force -ErrorAction Stop
+        }
+
+        It 'Exports expected number of functions' {
+            $exportedFunctions = (Get-Command -Module HyperVAutomation -CommandType Function).Count
+            $exportedFunctions | Should -Be 17
+        }
+
+        It 'All public functions are exported' {
+            $publicFiles = Get-ChildItem -Path (Join-Path $repoRoot 'src/HyperVAutomation/Public') -Filter '*.ps1' -File
+            $exportedCommands = Get-Command -Module HyperVAutomation -CommandType Function
+
+            foreach ($file in $publicFiles) {
+                $functionName = $file.BaseName
+                $exportedCommands.Name | Should -Contain $functionName -Because "Function $functionName should be exported"
+            }
+        }
+
+        It 'Can call Get-Command with module name' {
+            $commands = Get-Command -Module HyperVAutomation
+            $commands | Should -Not -BeNullOrEmpty
+        }
+
+        AfterAll {
+            Remove-Module HyperVAutomation -ErrorAction SilentlyContinue
+        }
+    }
+}
+
+Describe 'Wrapper Scripts' {
+    BeforeAll {
+        $script:wrapperScripts = Get-ChildItem -Path $repoRoot -Filter '*.ps1' -File | 
+            Where-Object { $_.Name -notmatch '^(bootstrap|generate-wrappers)\.ps1$' }
+    }
+
+    It 'Has wrapper scripts at root' {
+        $script:wrapperScripts.Count | Should -BeGreaterThan 0
+    }
+
+    It 'All wrapper scripts are parseable' {
+        foreach ($wrapper in $script:wrapperScripts) {
+            $errors = $null
+            $null = [System.Management.Automation.Language.Parser]::ParseFile($wrapper.FullName, [ref]$null, [ref]$errors)
+            $errors.Count | Should -Be 0 -Because "$($wrapper.Name) should parse without errors"
+        }
     }
 }

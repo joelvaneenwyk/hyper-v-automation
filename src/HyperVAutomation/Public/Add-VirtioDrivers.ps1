@@ -51,7 +51,6 @@ function Add-VirtioDrivers {
         [int]$ImageIndex = 1
     )
 
-    #Requires -RunAsAdministrator
 
     $ErrorActionPreference = 'Stop'
 

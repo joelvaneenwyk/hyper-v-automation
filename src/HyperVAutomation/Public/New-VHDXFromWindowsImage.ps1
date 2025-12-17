@@ -81,8 +81,6 @@ function New-VHDXFromWindowsImage {
         [string]$AddVirtioDrivers
     )
 
-    #Requires -RunAsAdministrator
-    #Requires -PSEdition Desktop
 
     $ErrorActionPreference = 'Stop'
 

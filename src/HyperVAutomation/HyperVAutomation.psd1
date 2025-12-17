@@ -27,7 +27,8 @@
     PowerShellVersion = '5.1'
 
     # Modules that must be imported into the global environment prior to importing this module
-    RequiredModules = @('Hyper-V')
+    # Note: Hyper-V module is required for most functions but not available on all platforms
+    # RequiredModules = @('Hyper-V')
 
     # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
     FunctionsToExport = @(

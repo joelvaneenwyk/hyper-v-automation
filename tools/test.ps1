@@ -79,8 +79,9 @@ if ($OutputFormat -ne 'Console') {
 if ($CodeCoverage) {
     $configuration.CodeCoverage.Enabled = $true
     $configuration.CodeCoverage.Path = @(
+        (Join-Path $repoRoot 'src/**/*.ps1')
+        (Join-Path $repoRoot 'src/**/*.psm1')
         (Join-Path $repoRoot '*.ps1')
-        (Join-Path $repoRoot '*.psm1')
     )
     $configuration.CodeCoverage.OutputFormat = 'JaCoCo'
     $configuration.CodeCoverage.OutputPath = Join-Path $repoRoot 'coverage.xml'

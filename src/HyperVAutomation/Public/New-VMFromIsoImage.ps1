@@ -96,7 +96,6 @@ function New-VMFromIsoImage {
         [switch]$EnableSecureBoot
     )
 
-    #Requires -RunAsAdministrator
 
     $ErrorActionPreference = 'Stop'
 
