@@ -107,7 +107,7 @@ function Normalize-MacAddress ([string]$value) {
 }
 
 # Get default VHD path (requires administrative privileges)
-$vmmsSettings = Get-WmiObject -Namespace root\virtualization\v2 Msvm_VirtualSystemManagementServiceSettingData
+$vmmsSettings = Get-CimInstance -Namespace root\virtualization\v2 -ClassName Msvm_VirtualSystemManagementServiceSettingData
 $vhdxPath = Join-Path $vmmsSettings.DefaultVirtualHardDiskPath "$VMName.vhdx"
 
 # Convert cloud image to VHDX

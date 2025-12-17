@@ -727,7 +727,7 @@ You can use the fields below to configure the VHD or VHDX that you want to creat
 
         function
         Get-WindowsBuildNumber {
-            $os = Get-WmiObject -Class Win32_OperatingSystem
+            $os = Get-CimInstance -ClassName Win32_OperatingSystem
             return [int]($os.BuildNumber)
         }
 
@@ -1140,14 +1140,15 @@ You can use the fields below to configure the VHD or VHDX that you want to creat
 
                 # Figure out VHD size and size unit.
                 $unit = $null
+                $divisor = 1
                 switch ([Math]::Round($SizeBytes.ToString().Length / 3)) {
-                    3 { $unit = "MB"; break }
-                    4 { $unit = "GB"; break }
-                    5 { $unit = "TB"; break }
-                    default { $unit = ""; break }
+                    3 { $unit = "MB"; $divisor = 1MB; break }
+                    4 { $unit = "GB"; $divisor = 1GB; break }
+                    5 { $unit = "TB"; $divisor = 1TB; break }
+                    default { $unit = ""; $divisor = 1; break }
                 }
 
-                $quantity = Invoke-Expression -Command "$($SizeBytes) / 1$($unit)"
+                $quantity = $SizeBytes / $divisor
 
                 #region Form Code
                 #region frmMain
@@ -1598,7 +1599,14 @@ You can use the fields below to configure the VHD or VHDX that you want to creat
                 $VHDFormat = $cmbVhdFormat.SelectedItem
 
                 # VHD Size
-                $SizeBytes = Invoke-Expression "$($numVhdSize.Value)$($cmbVhdSizeUnit.SelectedItem)"
+                $sizeValue = $numVhdSize.Value
+                $sizeUnit = $cmbVhdSizeUnit.SelectedItem
+                $SizeBytes = switch ($sizeUnit) {
+                    "MB" { $sizeValue * 1MB }
+                    "GB" { $sizeValue * 1GB }
+                    "TB" { $sizeValue * 1TB }
+                    default { $sizeValue }
+                }
 
                 # Working Directory
                 $WorkingDirectory = $txtWorkingDirectory.Text

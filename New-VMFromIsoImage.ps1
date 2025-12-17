@@ -46,8 +46,7 @@ function Normalize-MacAddress ([string]$value) {
 }
 
 # Get default VHD path (requires administrative privileges)
-$vmms = Get-WmiObject -Namespace root\virtualization\v2 Msvm_VirtualSystemManagementService
-$vmmsSettings = Get-WmiObject -Namespace root\virtualization\v2 Msvm_VirtualSystemManagementServiceSettingData
+$vmmsSettings = Get-CimInstance -Namespace root\virtualization\v2 -ClassName Msvm_VirtualSystemManagementServiceSettingData
 $vhdxPath = Join-Path $vmmsSettings.DefaultVirtualHardDiskPath "$VMName.vhdx"
 $metadataIso = Join-Path $vmmsSettings.DefaultVirtualHardDiskPath "$VMName-metadata.iso"
 
