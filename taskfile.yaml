@@ -1,0 +1,11 @@
+# https://taskfile.dev
+
+version: '3'
+
+tasks:
+  default:
+    cmds:
+      - pwsh -NoProfile -F ./bootstrap.ps1
+      - pwsh -NoProfile -F ./tools/format.ps1
+      - pwsh -NoProfile -F ./tools/lint.ps1
+      - pwsh -NoProfile -F ./tools/test.ps1
