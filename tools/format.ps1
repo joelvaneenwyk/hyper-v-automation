@@ -60,22 +60,26 @@ foreach ($file in $filesToFormat) {
     # Read original content
     $originalContent = Get-Content -Path $file.FullName -Raw
 
-    # Format the file
-    $formattedContent = Invoke-Formatter -ScriptDefinition $originalContent -Settings $settingsPath
+    try {
+        # Format the file
+        $formattedContent = Invoke-Formatter -ScriptDefinition $originalContent -Settings $settingsPath
 
-    # Check if content changed
-    if ($originalContent -ne $formattedContent) {
-        $needsFormatting += $file
+        # Check if content changed
+        if ($originalContent -ne $formattedContent) {
+            $needsFormatting += $file
 
-        if ($Check) {
-            Write-Host "  ❌ $($file.FullName.Replace($repoRoot, '.'))" -ForegroundColor Red
+            if ($Check) {
+                Write-Host "  ❌ $($file.FullName.Replace($repoRoot, '.'))" -ForegroundColor Red
+            } else {
+                Write-Host "  ✓ Formatted: $($file.FullName.Replace($repoRoot, '.'))" -ForegroundColor Green
+                # Write formatted content back
+                Set-Content -Path $file.FullName -Value $formattedContent -NoNewline
+            }
         } else {
-            Write-Host "  ✓ Formatted: $($file.FullName.Replace($repoRoot, '.'))" -ForegroundColor Green
-            # Write formatted content back
-            Set-Content -Path $file.FullName -Value $formattedContent -NoNewline
+            Write-Verbose "  Already formatted: $($file.FullName)"
         }
-    } else {
-        Write-Verbose "  Already formatted: $($file.FullName)"
+    } catch {
+        Write-Warning "  ⚠️  Could not format $($file.FullName): $_"
     }
 }
 

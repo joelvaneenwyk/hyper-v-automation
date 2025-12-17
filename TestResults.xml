@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<test-results xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="nunit_schema_2.5.xsd" name="Pester" total="14" errors="0" failures="0" not-run="0" inconclusive="0" ignored="0" skipped="0" invalid="0" date="2025-12-17" time="17:16:01">
+  <environment user="runner" clr-version="8.0.21" user-domain="" os-version="6.11.0-1018-azure" nunit-version="2.5.8.0" machine-name="runnervm6qbrg" cwd="/home/runner/work/hyper-v-automation/hyper-v-automation" platform="Linux" />
+  <culture-info current-culture="" current-uiculture="" />
+  <test-suite type="TestFixture" name="Pester" executed="True" result="Success" success="True" time="0.8245" asserts="0" description="Pester">
+    <results>
+      <test-suite type="TestFixture" name="/home/runner/work/hyper-v-automation/hyper-v-automation/tests/General.Tests.ps1" executed="True" result="Success" success="True" time="0.8245" asserts="0" description="/home/runner/work/hyper-v-automation/hyper-v-automation/tests/General.Tests.ps1">
+        <results>
+          <test-suite type="TestFixture" name="Repository Structure" executed="True" result="Success" success="True" time="0.189" asserts="0" description="Repository Structure">
+            <results>
+              <test-case description="Has README.md file" name="Repository Structure.Has README.md file" time="0.1261" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Has .editorconfig file" name="Repository Structure.Has .editorconfig file" time="0.0066" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Has PSScriptAnalyzerSettings.psd1 file" name="Repository Structure.Has PSScriptAnalyzerSettings.psd1 file" time="0.0073" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Has tools directory" name="Repository Structure.Has tools directory" time="0.0054" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Has tests directory" name="Repository Structure.Has tests directory" time="0.0089" asserts="0" success="True" result="Success" executed="True" />
+            </results>
+          </test-suite>
+          <test-suite type="TestFixture" name="PowerShell Scripts Validity" executed="True" result="Success" success="True" time="0.3321" asserts="0" description="PowerShell Scripts Validity">
+            <results>
+              <test-suite type="TestFixture" name="PowerShell Scripts Validity.Script Parsing" executed="True" result="Success" success="True" time="0.1026" asserts="0" description="PowerShell Scripts Validity.Script Parsing">
+                <results>
+                  <test-case description="All PowerShell scripts should parse without errors" name="PowerShell Scripts Validity.Script Parsing.All PowerShell scripts should parse without errors" time="0.0863" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="PowerShell Scripts Validity.Script Analysis" executed="True" result="Success" success="True" time="0.1303" asserts="0" description="PowerShell Scripts Validity.Script Analysis">
+                <results>
+                  <test-case description="PSScriptAnalyzer module is available" name="PowerShell Scripts Validity.Script Analysis.PSScriptAnalyzer module is available" time="0.0225" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-case description="Has PowerShell files in repository" name="PowerShell Scripts Validity.Has PowerShell files in repository" time="0.0121" asserts="0" success="True" result="Success" executed="True" />
+            </results>
+          </test-suite>
+          <test-suite type="TestFixture" name="Tool Scripts" executed="True" result="Success" success="True" time="0.4066" asserts="0" description="Tool Scripts">
+            <results>
+              <test-case description="format.ps1 exists and is parseable" name="Tool Scripts.format.ps1 exists and is parseable" time="0.041" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="lint.ps1 exists and is parseable" name="Tool Scripts.lint.ps1 exists and is parseable" time="0.0149" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="test.ps1 exists and is parseable" name="Tool Scripts.test.ps1 exists and is parseable" time="0.0136" asserts="0" success="True" result="Success" executed="True" />
+            </results>
+          </test-suite>
+          <test-suite type="TestFixture" name="Hello World Test" executed="True" result="Success" success="True" time="0.4483" asserts="0" description="Hello World Test">
+            <results>
+              <test-case description="Proves the Pester test harness works" name="Hello World Test.Proves the Pester test harness works" time="0.0128" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Can perform basic arithmetic" name="Hello World Test.Can perform basic arithmetic" time="0.0082" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="PowerShell version is available" name="Hello World Test.PowerShell version is available" time="0.0122" asserts="0" success="True" result="Success" executed="True" />
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+    </results>
+  </test-suite>
+</test-results>

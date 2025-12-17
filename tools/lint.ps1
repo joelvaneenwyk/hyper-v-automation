@@ -51,46 +51,46 @@ Write-Host "Settings: $settingsPath" -ForegroundColor Gray
 Write-Host ""
 
 # Run PSScriptAnalyzer
-$results = Invoke-ScriptAnalyzer -Path $repoRoot -Recurse -Settings $settingsPath -ExcludeRule PSReviewUnusedParameter
+$results = @(Invoke-ScriptAnalyzer -Path $repoRoot -Recurse -Settings $settingsPath -ExcludeRule PSReviewUnusedParameter)
 
 # Group results by severity
-$errors = $results | Where-Object Severity -eq 'Error'
-$warnings = $results | Where-Object Severity -eq 'Warning'
-$informational = $results | Where-Object Severity -eq 'Information'
+$errorResults = @($results | Where-Object Severity -eq 'Error')
+$warningResults = @($results | Where-Object Severity -eq 'Warning')
+$informationalResults = @($results | Where-Object Severity -eq 'Information')
 
 # Display results
 Write-Host "Analysis Results:" -ForegroundColor Cyan
-Write-Host "  Errors: $($errors.Count)" -ForegroundColor $(if ($errors.Count -eq 0) { 'Green' } else { 'Red' })
-Write-Host "  Warnings: $($warnings.Count)" -ForegroundColor $(if ($warnings.Count -eq 0) { 'Green' } else { 'Yellow' })
-Write-Host "  Information: $($informational.Count)" -ForegroundColor Gray
+Write-Host "  Errors: $($errorResults.Count)" -ForegroundColor $(if ($errorResults.Count -eq 0) { 'Green' } else { 'Red' })
+Write-Host "  Warnings: $($warningResults.Count)" -ForegroundColor $(if ($warningResults.Count -eq 0) { 'Green' } else { 'Yellow' })
+Write-Host "  Information: $($informationalResults.Count)" -ForegroundColor Gray
 Write-Host ""
 
 # Display errors
-if ($errors.Count -gt 0) {
+if ($errorResults.Count -gt 0) {
     Write-Host "ERRORS:" -ForegroundColor Red
-    foreach ($error in $errors) {
-        Write-Host "  ❌ $($error.ScriptName):$($error.Line)" -ForegroundColor Red
-        Write-Host "     [$($error.RuleName)] $($error.Message)" -ForegroundColor Red
+    foreach ($errorItem in $errorResults) {
+        Write-Host "  ❌ $($errorItem.ScriptName):$($errorItem.Line)" -ForegroundColor Red
+        Write-Host "     [$($errorItem.RuleName)] $($errorItem.Message)" -ForegroundColor Red
         Write-Host ""
     }
 }
 
 # Display warnings
-if ($warnings.Count -gt 0) {
+if ($warningResults.Count -gt 0) {
     Write-Host "WARNINGS:" -ForegroundColor Yellow
-    foreach ($warning in $warnings) {
-        Write-Host "  ⚠️  $($warning.ScriptName):$($warning.Line)" -ForegroundColor Yellow
-        Write-Host "     [$($warning.RuleName)] $($warning.Message)" -ForegroundColor Yellow
+    foreach ($warningItem in $warningResults) {
+        Write-Host "  ⚠️  $($warningItem.ScriptName):$($warningItem.Line)" -ForegroundColor Yellow
+        Write-Host "     [$($warningItem.RuleName)] $($warningItem.Message)" -ForegroundColor Yellow
         Write-Host ""
     }
 }
 
 # Display informational messages
-if ($informational.Count -gt 0 -and $VerbosePreference -eq 'Continue') {
+if ($informationalResults.Count -gt 0 -and $VerbosePreference -eq 'Continue') {
     Write-Host "INFORMATIONAL:" -ForegroundColor Gray
-    foreach ($info in $informational) {
-        Write-Host "  ℹ️  $($info.ScriptName):$($info.Line)" -ForegroundColor Gray
-        Write-Host "     [$($info.RuleName)] $($info.Message)" -ForegroundColor Gray
+    foreach ($infoItem in $informationalResults) {
+        Write-Host "  ℹ️  $($infoItem.ScriptName):$($infoItem.Line)" -ForegroundColor Gray
+        Write-Host "     [$($infoItem.RuleName)] $($infoItem.Message)" -ForegroundColor Gray
         Write-Host ""
     }
 }
@@ -98,11 +98,11 @@ if ($informational.Count -gt 0 -and $VerbosePreference -eq 'Continue') {
 # Determine exit code
 $exitCode = 0
 
-if ($errors.Count -gt 0) {
-    Write-Host "❌ Analysis failed with $($errors.Count) error(s)" -ForegroundColor Red
+if ($errorResults.Count -gt 0) {
+    Write-Host "❌ Analysis failed with $($errorResults.Count) error(s)" -ForegroundColor Red
     $exitCode = 1
-} elseif ($FailOnWarning -and $warnings.Count -gt 0) {
-    Write-Host "❌ Analysis failed with $($warnings.Count) warning(s) (strict mode)" -ForegroundColor Red
+} elseif ($FailOnWarning -and $warningResults.Count -gt 0) {
+    Write-Host "❌ Analysis failed with $($warningResults.Count) warning(s) (strict mode)" -ForegroundColor Red
     $exitCode = 1
 } else {
     Write-Host "✓ Analysis passed!" -ForegroundColor Green
