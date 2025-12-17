@@ -801,6 +801,7 @@ You can use the fields below to configure the VHD or VHDX that you want to creat
         ##########################################################################################
 
         function
+        [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseApprovedVerbs', '', Justification = 'Run is descriptive for executing external processes')]
         Run-Executable {
             <#
                 .SYNOPSIS
@@ -2290,6 +2291,7 @@ You can use the fields below to configure the VHD or VHDX that you want to creat
 
 
 function
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Function adds multiple type definitions, plural is appropriate')]
 Add-WindowsImageTypes {
     $code = @"
 using System;

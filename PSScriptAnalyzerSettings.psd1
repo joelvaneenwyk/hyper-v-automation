@@ -51,8 +51,8 @@
         }
 
         PSAlignAssignmentStatement = @{
-            Enable = $true
-            CheckHashtable = $true
+            Enable = $false
+            CheckHashtable = $false
         }
 
         PSUseCorrectCasing = @{
