@@ -1,5 +1,8 @@
 # Hyper-V automation scripts
 
+[![CI](https://github.com/joelvaneenwyk/hyper-v-automation/actions/workflows/ci.yml/badge.svg)](https://github.com/joelvaneenwyk/hyper-v-automation/actions/workflows/ci.yml)
+[![Documentation](https://github.com/joelvaneenwyk/hyper-v-automation/actions/workflows/pages.yml/badge.svg)](https://joelvaneenwyk.github.io/hyper-v-automation/)
+
 Collection of Powershell scripts to create Windows, Ubuntu and Debian VMs in Hyper-V.
 
 For Windows Server 2016+, Windows 10+ only.
@@ -7,6 +10,18 @@ For Windows Server 2016+, Windows 10+ only.
 For Hyper-V Generation 2 (UEFI) VMs only.
 
 To migrate an existing Windows VM from Hyper-V to Proxmox (QEMU) see [Prepare a VHDX for QEMU migration](#prepare-a-vhdx-for-qemu-migration).
+
+## Documentation
+
+📚 [Full documentation](https://joelvaneenwyk.github.io/hyper-v-automation/) is available on GitHub Pages.
+
+## Contributing
+
+Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on:
+- Code formatting and style
+- Running tests and linting
+- Documentation
+- Pull request process
 
 ## How to install
 
