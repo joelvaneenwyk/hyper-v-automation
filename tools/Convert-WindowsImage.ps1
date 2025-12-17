@@ -574,8 +574,6 @@ Convert-WindowsImage {
         ##########################################################################################
         #                             Constants and Pseudo-Constants
         ##########################################################################################
-        $PARTITION_STYLE_MBR = 0x00000000                                   # The default value
-        $PARTITION_STYLE_GPT = 0x00000001                                   # Just in case...
 
         # Version information that can be populated by timebuild.
         $ScriptVersion = data {
@@ -595,7 +593,6 @@ Convert-WindowsImage {
         $sessionKey = [Guid]::NewGuid().ToString()                 # Session key, used for keeping records unique between multiple runs.
         $logFolder = "$($TempDirectory)\$($scriptName)\$($sessionKey)" # Log folder path.
         $vhdMaxSize = 2040GB                                       # Maximum size for VHD is ~2040GB.
-        $vhdxMaxSize = 64TB                                         # Maximum size for VHDX is ~64TB.
         $lowestSupportedVersion = New-Object Version "6.1"                     # The lowest supported *image* version; making sure we don't run against Vista/2k8.
         $lowestSupportedBuild = 9200                                         # The lowest supported *host* build.  Set to Win8 CP.
         $transcripting = $false
@@ -1877,7 +1874,7 @@ You can use the fields below to configure the VHD or VHDX that you want to creat
                     # Create the reserved partition
                     #
                     Write-W2VInfo "Creating MSR partition..."
-                    $reservedPartition = New-Partition -DiskNumber $disk.Number -Size 128MB -GptType '{e3c9e316-0b5c-4db8-817d-f92df00215ae}'
+                    $null = New-Partition -DiskNumber $disk.Number -Size 128MB -GptType '{e3c9e316-0b5c-4db8-817d-f92df00215ae}'
 
                     #
                     # Create the Windows partition

@@ -74,14 +74,14 @@ if (Test-Path $mergeFolder) {
 New-Item -ItemType Directory -Path $mergeFolder -Force > $null
 
 $cwiArguments = @{
-    SourcePath   = $SourcePath
-    Edition      = $Edition
-    VHDPath      = $vhdxPath
-    SizeBytes    = $VHDXSizeBytes
-    VHDFormat    = 'VHDX'
-    DiskLayout   = 'UEFI'
+    SourcePath = $SourcePath
+    Edition = $Edition
+    VHDPath = $vhdxPath
+    SizeBytes = $VHDXSizeBytes
+    VHDFormat = 'VHDX'
+    DiskLayout = 'UEFI'
     UnattendPath = $unattendPath
-    MergeFolder  = $mergeFolder
+    MergeFolder = $mergeFolder
 }
 
 # Removes unattend.xml files after the setup is complete.
