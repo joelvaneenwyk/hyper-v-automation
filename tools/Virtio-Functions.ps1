@@ -39,6 +39,7 @@ function Get-VirtioDriverFolderName([string]$Version) {
     return $folder
 }
 
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseSingularNouns', '', Justification = 'Function returns multiple driver paths, plural is appropriate')]
 function Get-VirtioDrivers([string]$VirtioDriveLetter, [string]$Version) {
     $virtioInstaller = "$($virtioDriveLetter):\virtio-win-gt-x64.msi"
     $exists = Test-Path $virtioInstaller
@@ -59,6 +60,7 @@ function Get-VirtioDrivers([string]$VirtioDriveLetter, [string]$Version) {
     return $filteredDrivers.Directory.FullName
 }
 
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseApprovedVerbs', '', Justification = 'With pattern is idiomatic for resource management in PowerShell')]
 function With-IsoImage([string]$IsoFileName, [scriptblock]$ScriptBlock) {
     $IsoFileName = (Resolve-Path $IsoFileName).Path
 
@@ -74,6 +76,7 @@ function With-IsoImage([string]$IsoFileName, [scriptblock]$ScriptBlock) {
     }
 }
 
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseApprovedVerbs', '', Justification = 'With pattern is idiomatic for resource management in PowerShell')]
 function With-WindowsImage([string]$ImagePath, [int]$ImageIndex, [string]$VirtioDriveLetter, [scriptblock]$ScriptBlock) {
     $mountPath = Join-Path ([System.IO.Path]::GetTempPath()) "winmount\"
 
