@@ -1,6 +1,7 @@
 [CmdletBinding()]
 param(
     [Parameter(Mandatory = $true)]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingPlainTextForPassword', '', Justification = 'Password must be encoded in plain text for unattend.xml file format')]
     [string]$AdministratorPassword,
 
     [Parameter(Mandatory = $true)]

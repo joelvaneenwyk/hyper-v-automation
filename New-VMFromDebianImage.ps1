@@ -19,6 +19,7 @@ param(
     [string]$FQDN = $VMName,
 
     [Parameter(Mandatory = $true, ParameterSetName = 'RootPassword')]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingPlainTextForPassword', '', Justification = 'Password must be encoded in plain text for cloud-init user-data configuration')]
     [string]$RootPassword,
 
     [Parameter(Mandatory = $true, ParameterSetName = 'RootPublicKey')]

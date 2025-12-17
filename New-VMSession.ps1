@@ -4,7 +4,7 @@ param(
     [string]$VMName,
 
     [Parameter(Mandatory = $true)]
-    [string]$AdministratorPassword,
+    [SecureString]$AdministratorPassword,
 
     [string]$DomainName
 )
@@ -15,8 +15,7 @@ if ($DomainName) {
 else {
     $userName = 'administrator'
 }
-$pass = ConvertTo-SecureString $AdministratorPassword -AsPlainText -Force
-$cred = New-Object System.Management.Automation.PSCredential($userName, $pass)
+$cred = New-Object System.Management.Automation.PSCredential($userName, $AdministratorPassword)
 
 do {
     $result = New-PSSession -VMName $VMName -Credential $cred -ErrorAction SilentlyContinue
