@@ -1,16 +1,17 @@
-[CmdletBinding()]
-param(
-    [Parameter(Mandatory = $true)]
-    [System.Management.Automation.Runspaces.PSSession[]]$Session
-)
+#
+# Backward compatibility wrapper for Enable-RemoteManagementViaSession
+# This script imports the HyperVAutomation module and calls the function.
+#
+# DEPRECATED: Please import the module directly:
+#   Import-Module ./src/HyperVAutomation
+#   Enable-RemoteManagementViaSession <parameters>
+#
 
-$ErrorActionPreference = 'Stop'
+# Import the module from src/
+$modulePath = Join-Path $PSScriptRoot 'src/HyperVAutomation/HyperVAutomation.psd1'
+if (-not (Get-Module HyperVAutomation)) {
+    Import-Module $modulePath -Force -ErrorAction Stop
+}
 
-Invoke-Command -Session $Session { 
-    # Enable remote administration
-    Enable-PSRemoting -SkipNetworkProfileCheck -Force
-    Enable-WSManCredSSP -Role server -Force
-
-    # Default rule is for 'Local Subnet' only. Change to 'Any'.
-    Set-NetFirewallRule -DisplayName 'Windows Remote Management (HTTP-In)' -RemoteAddress Any
-} | Out-Null
+# Forward to the module function
+Enable-RemoteManagementViaSession @args

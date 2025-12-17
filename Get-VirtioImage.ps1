@@ -1,29 +1,17 @@
-[CmdletBinding()]
-param(
-    [string]$OutputPath
-)
+#
+# Backward compatibility wrapper for Get-VirtioImage
+# This script imports the HyperVAutomation module and calls the function.
+#
+# DEPRECATED: Please import the module directly:
+#   Import-Module ./src/HyperVAutomation
+#   Get-VirtioImage <parameters>
+#
 
-$ErrorActionPreference = 'Stop'
-
-$urlRoot = 'https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/stable-virtio/'
-$urlFile = 'virtio-win.iso'
-
-$url = "$urlRoot/$urlFile"
-        
-if (-not $OutputPath) {
-    $OutputPath = Get-Item '.\'
+# Import the module from src/
+$modulePath = Join-Path $PSScriptRoot 'src/HyperVAutomation/HyperVAutomation.psd1'
+if (-not (Get-Module HyperVAutomation)) {
+    Import-Module $modulePath -Force -ErrorAction Stop
 }
 
-$imgFile = Join-Path $OutputPath $urlFile
-
-if ([System.IO.File]::Exists($imgFile)) {
-    Write-Verbose "File '$imgFile' already exists. Nothing to do."
-}
-else {
-    Write-Verbose "Downloading file '$imgFile'..."
-
-    $client = New-Object System.Net.WebClient
-    $client.DownloadFile($url, $imgFile)
-}
-
-$imgFile
+# Forward to the module function
+Get-VirtioImage @args

@@ -1,38 +1,17 @@
-[CmdletBinding()]
-param(
-    [Parameter(Mandatory = $true)]
-    [System.Management.Automation.Runspaces.PSSession[]]$Session,
+#
+# Backward compatibility wrapper for Set-NetIPv6AddressViaSession
+# This script imports the HyperVAutomation module and calls the function.
+#
+# DEPRECATED: Please import the module directly:
+#   Import-Module ./src/HyperVAutomation
+#   Set-NetIPv6AddressViaSession <parameters>
+#
 
-    [string]$AdapterName,
+# Import the module from src/
+$modulePath = Join-Path $PSScriptRoot 'src/HyperVAutomation/HyperVAutomation.psd1'
+if (-not (Get-Module HyperVAutomation)) {
+    Import-Module $modulePath -Force -ErrorAction Stop
+}
 
-    [ValidateScript({
-            if ($_.AddressFamily -ne 'InterNetworkV6') {
-                throw 'IPAddress must be an IPv6 address.'
-            }
-            $true
-        })]
-    [Parameter(Mandatory = $true)]
-    [ipaddress]$IPAddress,
-
-    [Parameter(Mandatory = $true)]
-    [byte]$PrefixLength,
-    
-    [string[]]$DnsAddresses = @('2001:4860:4860::8888', '2001:4860:4860::8844')
-)
-
-$ErrorActionPreference = 'Stop'
-
-Invoke-Command -Session $Session { 
-    $ifName = $using:AdapterName
-
-    if (-not $ifName) {
-        # Get the gateway interface for IPv4
-        $ifName = (Get-NetIPConfiguration | ForEach-Object IPv4DefaultGateway).InterfaceAlias
-    }
-
-    $neta = Get-NetAdapter -Name $ifName
-    $neta | Get-NetIPAddress -AddressFamily IPv6 -PrefixOrigin Manual -ErrorAction SilentlyContinue | Remove-NetIPAddress -Confirm:$false 
-    $neta | New-NetIPAddress -AddressFamily IPv6 -IPAddress $using:IPAddress -PrefixLength $using:PrefixLength
-
-    $neta | Set-DnsClientServerAddress -Addresses $using:DnsAddresses
-} | Out-Null
+# Forward to the module function
+Set-NetIPv6AddressViaSession @args

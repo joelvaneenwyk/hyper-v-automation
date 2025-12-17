@@ -1,55 +1,19 @@
 #Requires -RunAsAdministrator
 
-[CmdletBinding()]
-param(
-    [Parameter(Mandatory = $true)]
-    [string]$VirtioIsoPath,
-    
-    [Parameter(Mandatory = $true)]
-    [string]$ImagePath,
-
-    [Parameter(Mandatory = $true)]
-    [ValidateSet('Server2025Datacenter',
-        'Server2025Standard',
-        'Server2022Datacenter',
-        'Server2022Standard',
-        'Server2019Datacenter',
-        'Server2019Standard',
-        'Server2016Datacenter',
-        'Server2016Standard',
-        'Windows11Enterprise',
-        'Windows11Professional',
-        'Windows10Enterprise',
-        'Windows10Professional',
-        'Windows81Professional')]
-    [string]$Version,
-
-    [int]$ImageIndex = 1
-)
-
-$ErrorActionPreference = 'Stop'
-
-
-
 #
-# Main
+# Backward compatibility wrapper for Add-VirtioDrivers
+# This script imports the HyperVAutomation module and calls the function.
+#
+# DEPRECATED: Please import the module directly:
+#   Import-Module ./src/HyperVAutomation
+#   Add-VirtioDrivers <parameters>
 #
 
-# Reference: https://pve.proxmox.com/wiki/Windows_10_guest_best_practices
-
-. .\tools\Virtio-Functions.ps1
-
-With-IsoImage -IsoFileName $VirtioIsoPath {
-    param($virtioDriveLetter)
-
-    # Throws if the ISO does not contain Virtio drivers.
-    $virtioDrivers = Get-VirtioDrivers -VirtioDriveLetter $virtioDriveLetter -Version $Version
-
-    With-WindowsImage -ImagePath $ImagePath -ImageIndex $ImageIndex -VirtioDriveLetter $VirtioDriveLetter {
-        param($mountPath)
-
-        $virtioDrivers | ForEach-Object {
-            Add-WindowsDriver -Path $mountPath -Driver $_ -Recurse -ForceUnsigned > $null
-        }
-    }
+# Import the module from src/
+$modulePath = Join-Path $PSScriptRoot 'src/HyperVAutomation/HyperVAutomation.psd1'
+if (-not (Get-Module HyperVAutomation)) {
+    Import-Module $modulePath -Force -ErrorAction Stop
 }
+
+# Forward to the module function
+Add-VirtioDrivers @args

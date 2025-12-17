@@ -1,28 +1,17 @@
-[CmdletBinding()]
-param(
-    [Parameter(Mandatory = $true)]
-    [string]$VMName,
+#
+# Backward compatibility wrapper for New-VMSession
+# This script imports the HyperVAutomation module and calls the function.
+#
+# DEPRECATED: Please import the module directly:
+#   Import-Module ./src/HyperVAutomation
+#   New-VMSession <parameters>
+#
 
-    [Parameter(Mandatory = $true)]
-    [SecureString]$AdministratorPassword,
-
-    [string]$DomainName
-)
-
-if ($DomainName) {
-    $userName = "$DomainName\administrator"
+# Import the module from src/
+$modulePath = Join-Path $PSScriptRoot 'src/HyperVAutomation/HyperVAutomation.psd1'
+if (-not (Get-Module HyperVAutomation)) {
+    Import-Module $modulePath -Force -ErrorAction Stop
 }
-else {
-    $userName = 'administrator'
-}
-$cred = New-Object System.Management.Automation.PSCredential($userName, $AdministratorPassword)
 
-do {
-    $result = New-PSSession -VMName $VMName -Credential $cred -ErrorAction SilentlyContinue
-
-    if (-not $result) {
-        Write-Verbose "Waiting for connection with '$VMName'..."
-        Start-Sleep -Seconds 1
-    }
-} while (-not $result)
-$result
+# Forward to the module function
+New-VMSession @args
