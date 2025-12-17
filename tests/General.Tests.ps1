@@ -55,7 +55,7 @@ Describe 'PowerShell Scripts Validity' {
             $parseErrors = @()
             foreach ($file in $script:psFiles) {
                 $errors = $null
-                $null = [System.Management.Automation.PSParser]::Tokenize((Get-Content -Path $file.FullName -Raw), [ref]$errors)
+                $null = [System.Management.Automation.Language.Parser]::ParseFile($file.FullName, [ref]$null, [ref]$errors)
                 if ($errors.Count -gt 0) {
                     $parseErrors += "$($file.Name): $($errors.Count) error(s)"
                 }
@@ -78,7 +78,7 @@ Describe 'Tool Scripts' {
         $formatScript | Should -Exist
 
         $errors = $null
-        $null = [System.Management.Automation.PSParser]::Tokenize((Get-Content -Path $formatScript -Raw), [ref]$errors)
+        $null = [System.Management.Automation.Language.Parser]::ParseFile($formatScript, [ref]$null, [ref]$errors)
         $errors.Count | Should -Be 0
     }
 
@@ -87,7 +87,7 @@ Describe 'Tool Scripts' {
         $lintScript | Should -Exist
 
         $errors = $null
-        $null = [System.Management.Automation.PSParser]::Tokenize((Get-Content -Path $lintScript -Raw), [ref]$errors)
+        $null = [System.Management.Automation.Language.Parser]::ParseFile($lintScript, [ref]$null, [ref]$errors)
         $errors.Count | Should -Be 0
     }
 
@@ -96,7 +96,7 @@ Describe 'Tool Scripts' {
         $testScript | Should -Exist
 
         $errors = $null
-        $null = [System.Management.Automation.PSParser]::Tokenize((Get-Content -Path $testScript -Raw), [ref]$errors)
+        $null = [System.Management.Automation.Language.Parser]::ParseFile($testScript, [ref]$null, [ref]$errors)
         $errors.Count | Should -Be 0
     }
 }
