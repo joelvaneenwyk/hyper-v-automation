@@ -15,6 +15,7 @@ param(
 
     [uint64]$VHDXSizeBytes,
 
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingPlainTextForPassword', '', Justification = 'Password is passed to New-WindowsUnattendFile which encodes it for XML')]
     [string]$AdministratorPassword,
 
     [Parameter(Mandatory = $true)]
