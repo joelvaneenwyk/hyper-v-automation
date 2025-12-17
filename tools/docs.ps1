@@ -67,23 +67,29 @@ foreach ($script in $scriptFiles) {
         $scriptName = [System.IO.Path]::GetFileNameWithoutExtension($script.Name)
         $outputPath = Join-Path $referencePath "$scriptName.md"
 
-        # Check if script has comment-based help
-        $content = Get-Content -Path $script.FullName -Raw
-        if ($content -match '\.SYNOPSIS|\.DESCRIPTION') {
+        # Check if script has comment-based help using AST
+        $ast = [System.Management.Automation.Language.Parser]::ParseFile($script.FullName, [ref]$null, [ref]$null)
+        $helpContent = $ast.GetHelpContent()
+
+        if ($helpContent) {
             Write-Host "  Documenting: $($script.Name)" -ForegroundColor Green
 
             # Generate or update documentation
             if ($UpdateExisting -and (Test-Path $outputPath)) {
-                Update-MarkdownHelp -Path $outputPath -ErrorAction SilentlyContinue | Out-Null
-            } else {
-                # Import the script to get help
-                $help = Get-Help $script.FullName -Full
-
-                if ($help.Synopsis -and $help.Synopsis -ne $script.Name) {
-                    New-MarkdownHelp -Command $script.FullName -OutputFolder $referencePath -Force -ErrorAction SilentlyContinue | Out-Null
+                try {
+                    Update-MarkdownHelp -Path $outputPath -ErrorAction Stop | Out-Null
                     $documented++
-                } else {
-                    Write-Host "    ⚠️  Skipped (no valid help content)" -ForegroundColor Yellow
+                } catch {
+                    Write-Host "    ⚠️  Could not update documentation: $_" -ForegroundColor Yellow
+                    $skipped++
+                }
+            } else {
+                try {
+                    # Use Get-Help on the script path - platyPS handles this correctly
+                    New-MarkdownHelp -Command $script.FullName -OutputFolder $referencePath -Force -ErrorAction Stop | Out-Null
+                    $documented++
+                } catch {
+                    Write-Host "    ⚠️  Could not generate documentation: $_" -ForegroundColor Yellow
                     $skipped++
                 }
             }
