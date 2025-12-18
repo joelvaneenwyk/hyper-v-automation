@@ -23,6 +23,43 @@ Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for gui
 - Documentation
 - Pull request process
 
+## Module Structure
+
+This repository is organized as a PowerShell module for better discoverability, versioning, and packaging.
+
+### Installation and Usage
+
+**Option 1: Import the Module Directly (Recommended)**
+
+Clone or download the repository, then import the module:
+
+```powershell
+Import-Module ./src/HyperVAutomation
+Get-Command -Module HyperVAutomation
+```
+
+Once imported, all functions are available:
+
+```powershell
+$session = New-VMSession -VMName "MyVM" -AdministratorPassword (ConvertTo-SecureString "P@ssw0rd!" -AsPlainText -Force)
+```
+
+### Module Layout
+
+```
+src/HyperVAutomation/
+├── HyperVAutomation.psd1    # Module manifest
+├── HyperVAutomation.psm1    # Root module
+├── Public/                   # Exported functions
+│   ├── New-VMFromWindowsImage.ps1
+│   ├── New-VMSession.ps1
+│   └── ...
+└── Private/                  # Internal helper functions
+    ├── Metadata-Functions.ps1
+    ├── Virtio-Functions.ps1
+    └── Convert-WindowsImage.ps1
+```
+
 ## How to install
 
 To download all scripts into your `$env:TEMP` folder:
@@ -38,11 +75,13 @@ If you already cloned the repo, you can refresh from GitHub with [bootstrap.ps1]
 ## Create a new VM for Hyper-V
 
 ```powershell
+Import-Module ./src/HyperVAutomation
+
 $isoFile = '.\en_windows_server_2019_x64_dvd_4cb967d8.iso'
 $vmName = 'TstWindows'
 $pass = 'u531@rg3pa55w0rd$!'
 
-.\New-VMFromWindowsImage.ps1 `
+New-VMFromWindowsImage `
     -SourcePath $isoFile `
     -Edition 'Windows Server 2019 Standard' `
     -VMName $vmName `
@@ -52,9 +91,10 @@ $pass = 'u531@rg3pa55w0rd$!'
     -MemoryStartupBytes 2GB `
     -VMProcessorCount 2
 
-$sess = .\New-VMSession.ps1 -VMName $vmName -AdministratorPassword $pass
+$sessPass = ConvertTo-SecureString $pass -AsPlainText -Force
+$sess = New-VMSession -VMName $vmName -AdministratorPassword $sessPass
 
-.\Set-NetIPAddressViaSession.ps1 `
+Set-NetIPAddressViaSession `
     -Session $sess `
     -IPAddress 10.10.1.195 `
     -PrefixLength 16 `
@@ -62,7 +102,7 @@ $sess = .\New-VMSession.ps1 -VMName $vmName -AdministratorPassword $pass
     -DnsAddresses '8.8.8.8','8.8.4.4' `
     -NetworkCategory 'Public'
 
-.\Enable-RemoteManagementViaSession.ps1 -Session $sess
+Enable-RemoteManagementViaSession -Session $sess
 
 # You can run any commands on VM with Invoke-Command:
 Invoke-Command -Session $sess {
@@ -83,17 +123,19 @@ Remove-PSSession -Session $sess
 ## Prepare a VHDX for QEMU migration
 
 ```powershell
+Import-Module ./src/HyperVAutomation
+
 $vmName = 'TstWindows'
 
 # Shutdown VM
 Stop-VM $vmName
 
 # Get VirtIO ISO
-$virtioIso = .\Get-VirtioImage.ps1 -OutputPath $env:TEMP
+$virtioIso = Get-VirtioImage -OutputPath $env:TEMP
 
 # Install VirtIO drivers to Windows VM (offline)
 $vhdxFile = "C:\Hyper-V\Virtual Hard Disks\$vmName.vhdx"
-.\Add-VirtioDrivers.ps1 -VirtioIsoPath $virtioIso -ImagePath $vhdxFile
+Add-VirtioDrivers -VirtioIsoPath $virtioIso -ImagePath $vhdxFile
 
 # Copy VHDX file to QEMU host
 scp $vhdxFile "root@pve-host:/tmp/"
@@ -104,6 +146,10 @@ After the copy is complete, you may use [`import-vm-windows`](https://github.com
 Once the VM is running, ensure that the [QEMU Guest Agent](https://pve.proxmox.com/wiki/Qemu-guest-agent) is installed within the guest environment.
 
 # Command summary
+
+All functions are available through the HyperVAutomation PowerShell module. After importing the module with `Import-Module ./src/HyperVAutomation`, you can use `Get-Command -Module HyperVAutomation` to list all available functions.
+
+## Available Functions/Scripts
 
 - Setup
   - [bootstrap.ps1](bootstrap.ps1) — download and unpack the latest archive into `%TEMP%`
