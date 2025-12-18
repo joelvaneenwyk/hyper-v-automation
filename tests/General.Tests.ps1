@@ -190,22 +190,3 @@ Describe 'Module Structure' {
         }
     }
 }
-
-Describe 'Wrapper Scripts' {
-    BeforeAll {
-        $script:wrapperScripts = Get-ChildItem -Path $repoRoot -Filter '*.ps1' -File | 
-            Where-Object { $_.Name -notmatch '^(bootstrap|generate-wrappers)\.ps1$' }
-    }
-
-    It 'Has wrapper scripts at root' {
-        $script:wrapperScripts.Count | Should -BeGreaterThan 0
-    }
-
-    It 'All wrapper scripts are parseable' {
-        foreach ($wrapper in $script:wrapperScripts) {
-            $errors = $null
-            $null = [System.Management.Automation.Language.Parser]::ParseFile($wrapper.FullName, [ref]$null, [ref]$errors)
-            $errors.Count | Should -Be 0 -Because "$($wrapper.Name) should parse without errors"
-        }
-    }
-}

@@ -44,16 +44,6 @@ Once imported, all functions are available:
 $session = New-VMSession -VMName "MyVM" -AdministratorPassword (ConvertTo-SecureString "P@ssw0rd!" -AsPlainText -Force)
 ```
 
-**Option 2: Use Wrapper Scripts (Legacy)**
-
-The root directory contains backward-compatible wrapper scripts that automatically import the module and call the corresponding function:
-
-```powershell
-.\New-VMFromWindowsImage.ps1 -SourcePath $isoFile -Edition "Windows Server 2022 Standard" ...
-```
-
-These wrapper scripts are provided for backward compatibility and may be deprecated in future versions.
-
 ### Module Layout
 
 ```
@@ -82,11 +72,7 @@ If you already cloned the repo, you can refresh from GitHub with [bootstrap.ps1]
 
 # Examples
 
-> **Note**: These examples show both the legacy wrapper script approach and the modern module approach. We recommend using the module directly by importing it first.
-
 ## Create a new VM for Hyper-V
-
-**Using the Module (Recommended):**
 
 ```powershell
 Import-Module ./src/HyperVAutomation
@@ -117,36 +103,8 @@ Set-NetIPAddressViaSession `
     -NetworkCategory 'Public'
 
 Enable-RemoteManagementViaSession -Session $sess
-```
-
-**Using Wrapper Scripts (Legacy):**
-
-```powershell
-$isoFile = '.\en_windows_server_2019_x64_dvd_4cb967d8.iso'
-$vmName = 'TstWindows'
-$pass = 'u531@rg3pa55w0rd$!'
-
-.\New-VMFromWindowsImage.ps1 `
-    -SourcePath $isoFile `
-    -Edition 'Windows Server 2019 Standard' `
-    -VMName $vmName `
-    -VHDXSizeBytes 60GB `
-    -AdministratorPassword $pass `
-    -Version 'Server2019Standard' `
-    -MemoryStartupBytes 2GB `
-    -VMProcessorCount 2
-
-$sess = .\New-VMSession.ps1 -VMName $vmName -AdministratorPassword $pass
-
-.\Set-NetIPAddressViaSession.ps1 `
-    -Session $sess `
-    -IPAddress 10.10.1.195 `
-    -PrefixLength 16 `
-    -DefaultGateway 10.10.1.250 `
     -DnsAddresses '8.8.8.8','8.8.4.4' `
     -NetworkCategory 'Public'
-
-.\Enable-RemoteManagementViaSession.ps1 -Session $sess
 
 # You can run any commands on VM with Invoke-Command:
 Invoke-Command -Session $sess {
@@ -167,17 +125,19 @@ Remove-PSSession -Session $sess
 ## Prepare a VHDX for QEMU migration
 
 ```powershell
+Import-Module ./src/HyperVAutomation
+
 $vmName = 'TstWindows'
 
 # Shutdown VM
 Stop-VM $vmName
 
 # Get VirtIO ISO
-$virtioIso = .\Get-VirtioImage.ps1 -OutputPath $env:TEMP
+$virtioIso = Get-VirtioImage -OutputPath $env:TEMP
 
 # Install VirtIO drivers to Windows VM (offline)
 $vhdxFile = "C:\Hyper-V\Virtual Hard Disks\$vmName.vhdx"
-.\Add-VirtioDrivers.ps1 -VirtioIsoPath $virtioIso -ImagePath $vhdxFile
+Add-VirtioDrivers -VirtioIsoPath $virtioIso -ImagePath $vhdxFile
 
 # Copy VHDX file to QEMU host
 scp $vhdxFile "root@pve-host:/tmp/"
@@ -190,8 +150,6 @@ Once the VM is running, ensure that the [QEMU Guest Agent](https://pve.proxmox.c
 # Command summary
 
 All functions are available through the HyperVAutomation PowerShell module. After importing the module with `Import-Module ./src/HyperVAutomation`, you can use `Get-Command -Module HyperVAutomation` to list all available functions.
-
-For backward compatibility, wrapper scripts at the repository root provide the same functionality using the original script-based interface.
 
 ## Available Functions/Scripts
 
