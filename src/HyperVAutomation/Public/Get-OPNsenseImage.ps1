@@ -60,7 +60,7 @@ function Get-OPNsenseImage {
         Write-Verbose "Extracting file '$isoFile' to '$OutputPath'..."
         & 7z.exe e $isoFile "-o$($OutputPath)" | Out-Null
 
-        $fileExists = Test-Path -Path $uncompressedisoFile
+        $fileExists = Test-Path -Path $uncompressedIsoFile
         if (-not $fileExists) {
             throw "Image '$uncompressedUrlFile' not found after extracting .bz2 file."
         }

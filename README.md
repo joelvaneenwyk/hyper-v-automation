@@ -103,8 +103,6 @@ Set-NetIPAddressViaSession `
     -NetworkCategory 'Public'
 
 Enable-RemoteManagementViaSession -Session $sess
-    -DnsAddresses '8.8.8.8','8.8.4.4' `
-    -NetworkCategory 'Public'
 
 # You can run any commands on VM with Invoke-Command:
 Invoke-Command -Session $sess {
